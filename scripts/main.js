@@ -96,12 +96,78 @@ function initCountdown() {
 // RSVP Form Submission
 function initRSVPForm() {
     const rsvpForm = document.querySelector('.rsvp-form');
+    const formStatus = document.getElementById('form-status');
     
     if (rsvpForm) {
         rsvpForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            alert('Thank you for your RSVP! We look forward to celebrating with you.');
-            rsvpForm.reset();
+            
+            // Show loading indicator
+            const submitButton = rsvpForm.querySelector('.form-button');
+            const originalButtonText = submitButton.textContent;
+            submitButton.textContent = 'Sending...';
+            submitButton.disabled = true;
+            
+            if (formStatus) {
+                formStatus.innerHTML = '<p class="sending">Sending your RSVP...</p>';
+                formStatus.style.display = 'block';
+            }
+            
+            // Gather form data
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                attending: document.querySelector('input[name="attending"]:checked').value,
+                guests: document.getElementById('guests').value,
+                message: document.getElementById('message').value || 'No message provided'
+            };
+            
+            // Replace this URL with your actual Google Apps Script Web App URL
+            const googleScriptURL = 'YOUR_GOOGLE_SCRIPT_URL_HERE';
+            
+            // Send data to Google Sheet
+            fetch(googleScriptURL, {
+                method: 'POST',
+                body: JSON.stringify(formData),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Success message
+                if (formStatus) {
+                    formStatus.innerHTML = '<p class="success">Thank you for your RSVP! We look forward to celebrating with you.</p>';
+                } else {
+                    alert('Thank you for your RSVP! We look forward to celebrating with you.');
+                }
+                
+                rsvpForm.reset();
+                
+                // Reset button after 3 seconds
+                setTimeout(() => {
+                    submitButton.textContent = originalButtonText;
+                    submitButton.disabled = false;
+                }, 3000);
+            })
+            .catch(error => {
+                console.error('Error submitting RSVP:', error);
+                
+                if (formStatus) {
+                    formStatus.innerHTML = '<p class="error">There was an error submitting your RSVP. Please try again later.</p>';
+                } else {
+                    alert('There was an error submitting your RSVP. Please try again later.');
+                }
+                
+                // Reset button
+                submitButton.textContent = originalButtonText;
+                submitButton.disabled = false;
+            });
         });
     } else {
         console.warn('RSVP form not found');
