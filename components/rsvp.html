@@ -5,31 +5,27 @@
       <h2 class="section-title">RSVP</h2>
       <p class="section-subtitle">Please let us know if you can make it by April 8, 2025</p>
     </div>
-    <form class="rsvp-form" id="rsvp-form">
+    <form class="rsvp-form">
       <div class="form-group">
         <label for="name" class="form-label">Full Name</label>
-        <input type="text" id="name" name="name" class="form-input" required>
-      </div>
-      <div class="form-group">
-        <label for="email" class="form-label">Email Address</label>
-        <input type="email" id="email" name="email" class="form-input" required>
+        <input type="text" id="name" class="form-input" required>
       </div>
       <div class="form-group">
         <label class="form-label">Will you be attending?</label>
         <div class="radio-group">
           <div class="radio-item">
-            <input type="radio" id="attending-yes" name="attending" value="Happily Accept" class="radio-input" required>
+            <input type="radio" id="attending-yes" name="attending" value="yes" class="radio-input" required>
             <label for="attending-yes">Happily Accept</label>
           </div>
           <div class="radio-item">
-            <input type="radio" id="attending-no" name="attending" value="Regretfully Decline" class="radio-input">
+            <input type="radio" id="attending-no" name="attending" value="no" class="radio-input">
             <label for="attending-no">Regretfully Decline</label>
           </div>
         </div>
       </div>
       <div class="form-group">
         <label for="guests" class="form-label">Number of Guests</label>
-        <select id="guests" name="guests" class="form-select">
+        <select id="guests" class="form-select">
           <option value="1">Just Me</option>
           <option value="2">Me + 1 Guest</option>
           <option value="3">Me + 2 Guests</option>
@@ -38,9 +34,8 @@
       </div>
       <div class="form-group">
         <label for="message" class="form-label">Message to the Couple</label>
-        <textarea id="message" name="message" class="form-textarea"></textarea>
+        <textarea id="message" class="form-textarea"></textarea>
       </div>
-      <div id="form-status" class="form-status"></div>
       <button type="submit" class="form-button">Send RSVP</button>
     </form>
   </div>

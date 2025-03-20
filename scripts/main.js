@@ -96,82 +96,77 @@ function initCountdown() {
 // RSVP Form Submission
 function initRSVPForm() {
     const rsvpForm = document.querySelector('.rsvp-form');
-    const formStatus = document.getElementById('form-status');
     
     if (rsvpForm) {
         rsvpForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
-            // Show loading indicator
-            const submitButton = rsvpForm.querySelector('.form-button');
-            const originalButtonText = submitButton.textContent;
-            submitButton.textContent = 'Sending...';
+            // Disable the submit button to prevent multiple submissions
+            const submitButton = rsvpForm.querySelector('button[type="submit"]');
             submitButton.disabled = true;
+            submitButton.innerHTML = 'Sending...';
             
-            if (formStatus) {
-                formStatus.innerHTML = '<p class="sending">Sending your RSVP...</p>';
-                formStatus.style.display = 'block';
-            }
+            // Get form data
+            const name = document.getElementById('name').value;
+            const attending = document.querySelector('input[name="attending"]:checked').value;
+            const guests = document.getElementById('guests').value;
+            const message = document.getElementById('message').value;
             
-            // Gather form data
+            // Create data object to send
             const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                attending: document.querySelector('input[name="attending"]:checked').value,
-                guests: document.getElementById('guests').value,
-                message: document.getElementById('message').value || 'No message provided'
+                name: name,
+                attending: attending,
+                guests: guests,
+                message: message,
+                timestamp: new Date().toISOString()
             };
             
-            // Replace this URL with your actual Google Apps Script Web App URL
-            const googleScriptURL = 'https://script.google.com/macros/s/AKfycbwxbGYjcETJlI4Pr4OBShq0v36eu83eJEnAwtXErY-ZyzpaYoKyKx7TMOeEBwriiRfaAQ/exec';
-            
-            // Send data to Google Sheet
-            fetch(googleScriptURL, {
-                method: 'POST',
-                body: JSON.stringify(formData),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Success message
-                if (formStatus) {
-                    formStatus.innerHTML = '<p class="success">Thank you for your RSVP! We look forward to celebrating with you.</p>';
-                } else {
-                    alert('Thank you for your RSVP! We look forward to celebrating with you.');
-                }
-                
-                rsvpForm.reset();
-                
-                // Reset button after 3 seconds
-                setTimeout(() => {
-                    submitButton.textContent = originalButtonText;
-                    submitButton.disabled = false;
-                }, 3000);
-            })
-            .catch(error => {
-                console.error('Error submitting RSVP:', error);
-                
-                if (formStatus) {
-                    formStatus.innerHTML = '<p class="error">There was an error submitting your RSVP. Please try again later.</p>';
-                } else {
-                    alert('There was an error submitting your RSVP. Please try again later.');
-                }
-                
-                // Reset button
-                submitButton.textContent = originalButtonText;
-                submitButton.disabled = false;
-            });
+            // Send data to Google Sheets
+            sendToGoogleSheets(formData, rsvpForm, submitButton);
         });
     } else {
         console.warn('RSVP form not found');
     }
+}
+
+// Function to send data to Google Sheets
+function sendToGoogleSheets(data, form, submitButton) {
+    // Replace with your Google Apps Script Web App URL
+    const sheetsApiUrl = 'https://script.google.com/macros/s/AKfycbzGeglMs_ASOFiHaUFeTsdy8vrk9za2jXmUeLd7knQCkCA8d3J5bLsDkd10eTZOhNKipg/exec';
+    
+    fetch(sheetsApiUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        cache: 'no-cache',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        redirect: 'follow',
+        body: JSON.stringify(data)
+    })
+    .then(() => {
+        // Show success message (since no-cors mode doesn't give us response details)
+        submitButton.innerHTML = 'Sent!';
+        form.reset();
+        
+        // Show success message to user
+        const successMsg = document.createElement('div');
+        successMsg.className = 'form-success-message';
+        successMsg.innerHTML = '<p>Thank you for your RSVP! We look forward to celebrating with you.</p>';
+        form.appendChild(successMsg);
+        
+        // Re-enable button after a few seconds
+        setTimeout(() => {
+            submitButton.disabled = false;
+            submitButton.innerHTML = 'Send RSVP';
+        }, 5000);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        submitButton.disabled = false;
+        submitButton.innerHTML = 'Send RSVP';
+        alert('There was an error submitting your RSVP. Please try again.');
+    });
 }
 
 // Gallery Tabs
