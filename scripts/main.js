@@ -123,7 +123,7 @@ function initRSVPForm() {
             };
             
             // Replace this URL with your actual Google Apps Script Web App URL
-            const googleScriptURL = 'YOUR_GOOGLE_SCRIPT_URL_HERE';
+            const googleScriptURL = 'https://script.google.com/macros/s/AKfycbwxbGYjcETJlI4Pr4OBShq0v36eu83eJEnAwtXErY-ZyzpaYoKyKx7TMOeEBwriiRfaAQ/exec';
             
             // Send data to Google Sheet
             fetch(googleScriptURL, {
