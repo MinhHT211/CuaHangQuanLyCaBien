@@ -636,3 +636,29 @@ footer {
     display: flex;
     flex-direction: column;
 }
+
+.form-status {
+  margin: 15px 0;
+  padding: 10px;
+  border-radius: 5px;
+  display: none;
+  text-align: center;
+}
+
+.form-status .sending {
+  color: #3498db;
+}
+
+.form-status .success {
+  color: #2ecc71;
+}
+
+.form-status .error {
+  color: #e74c3c;
+}
+
+/* Style for disabled button when submitting */
+.form-button:disabled {
+  background-color: #d4b08c90;
+  cursor: not-allowed;
+}
