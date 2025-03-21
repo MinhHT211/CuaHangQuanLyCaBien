@@ -104,6 +104,9 @@ nav.scrolled {
     padding: 0 20px;
     position: relative;
     z-index: 2;
+    
+    /* This shifts the text content down */
+    margin-top: 180px;
 }
 
 .hero h1 {
@@ -224,16 +227,25 @@ section {
 .couple-text {
     flex: 1;
     min-width: 300px;
+    text-align: justify;
 }
 
 .couple-image {
     flex: 1;
     min-width: 300px;
     height: 400px;
-    background: url('../images/couple.jpg') center/cover no-repeat;
     border-radius: 10px;
     position: relative;
     overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.couple-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
 }
 
 .couple-image::before {
@@ -245,6 +257,82 @@ section {
     height: 100%;
     background: rgba(212, 176, 140, 0.2);
     z-index: 1;
+    pointer-events: none;
+}
+
+.couple-image:hover img {
+    transform: scale(1.05);
+}
+
+/* Lightbox Styles */
+.lightbox {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+.lightbox.active {
+    display: flex;
+}
+
+.lightbox-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+}
+
+.lightbox-img {
+    display: block;
+    max-width: 100%;
+    max-height: 90vh;
+    margin: 0 auto;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: #fff;
+    font-size: 30px;
+    cursor: pointer;
+    z-index: 2001;
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lightbox-close:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.lightbox-image {
+    cursor: pointer;
+}
+
+/* Image hover effect for all gallery items */
+.gallery-item, .couple-image {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.gallery-item:hover .gallery-image,
+.couple-image:hover img {
+    transform: scale(1.05);
 }
 
 .couple h3 {
@@ -637,43 +725,95 @@ footer {
     flex-direction: column;
 }
 
-/* Add these styles to your main.css file */
+/* Couple Intro Section - Add this to your main.css file */
+.couple-intro {
+    background-color: rgba(212, 176, 140, 0.1); /* Light version of primary color */
+    padding: 100px 0;
+}
 
-/* Success message styling */
-.form-success-message {
-    background-color: rgba(76, 175, 80, 0.1);
-    color: #4CAF50;
-    padding: 12px;
-    margin-top: 20px;
-    border-radius: 5px;
-    border-left: 4px solid #4CAF50;
+.couple-intro-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 80px;
+    margin-top: 40px;
+}
+
+.person-card {
+    flex: 1;
+    max-width: 350px;
+    min-width: 280px;
     text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: var(--secondary-color);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
 }
 
-/* Error message styling */
-.form-error-message {
-    background-color: rgba(244, 67, 54, 0.1);
-    color: #F44336;
-    padding: 12px;
-    margin-top: 20px;
-    border-radius: 5px;
-    border-left: 4px solid #F44336;
-    text-align: center;
+.person-card:hover {
+    transform: translateY(-10px);
 }
 
-/* Button states */
-.form-button:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
+.person-image {
+    width: 200px;
+    height: 300px;
+    margin: 0 auto 25px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Loading animation for the submit button */
-@keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.7; }
-    100% { opacity: 1; }
+.portrait-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 5%; /* Adjust this value to shift the focus up/down */
 }
 
-.form-button:disabled {
-    animation: pulse 1.5s infinite;
+.person-name {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2.2rem;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+.person-title {
+    font-size: 1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--dark-color);
+    margin-bottom: 20px;
+    opacity: 0.8;
+}
+
+.person-desc {
+    line-height: 1.8;
+    color: var(--dark-color);
+    font-size: 0.95rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .couple-intro-container {
+        gap: 40px;
+    }
+    
+    .person-image {
+        width: 180px;
+        height: 270px;
+    }
+    
+    .person-name {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .person-image {
+        width: 160px;
+        height: 240px;
+    }
 }
