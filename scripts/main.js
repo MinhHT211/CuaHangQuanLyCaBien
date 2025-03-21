@@ -203,14 +203,14 @@ function initGalleryTabs() {
         
         galleryItems.forEach(item => {
             item.addEventListener('click', () => {
-                alert('Lightbox would open here in a fully functional website!');
+                const imgSrc = item.querySelector('img').src;
+                openLightbox(imgSrc);
             });
         });
     } else {
         console.warn('Gallery elements not found');
     }
 }
-
 
 // Lightbox functionality
 function initLightbox() {
@@ -230,26 +230,48 @@ function initLightbox() {
         const closeBtn = lightbox.querySelector('.lightbox-close');
         closeBtn.addEventListener('click', function() {
             lightbox.classList.remove('active');
+            document.body.style.overflow = "auto"; // Re-enable scrolling
         });
         
         // Close lightbox when clicking outside the image
         lightbox.addEventListener('click', function(e) {
             if (e.target === lightbox) {
                 lightbox.classList.remove('active');
+                document.body.style.overflow = "auto"; // Re-enable scrolling
+            }
+        });
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+                lightbox.classList.remove('active');
+                document.body.style.overflow = "auto"; // Re-enable scrolling
             }
         });
     }
     
-    // Get lightbox elements
-    const lightbox = document.querySelector('.lightbox');
-    const lightboxImg = lightbox.querySelector('.lightbox-img');
+    // Get all images that should trigger the lightbox
+    setupLightboxTriggers();
+}
+
+// Setup all lightbox triggers
+function setupLightboxTriggers() {
+    // Add click events to all portrait images in couple-intro section
+    const portraitImages = document.querySelectorAll('.portrait-img');
+    portraitImages.forEach(img => {
+        img.addEventListener('click', function() {
+            openLightbox(this.src);
+        });
+        
+        // Add cursor pointer style to make it clear they're clickable
+        img.style.cursor = 'pointer';
+    });
     
     // Add click event to couple image
     const coupleImage = document.querySelector('.couple-image img');
     if (coupleImage) {
         coupleImage.addEventListener('click', function() {
-            lightboxImg.src = this.src;
-            lightbox.classList.add('active');
+            openLightbox(this.src);
         });
     }
     
@@ -258,15 +280,19 @@ function initLightbox() {
     galleryImages.forEach(img => {
         img.addEventListener('click', function(e) {
             e.preventDefault();
-            lightboxImg.src = this.src;
-            lightbox.classList.add('active');
+            openLightbox(this.src);
         });
     });
+}
+
+// Function to open the lightbox
+function openLightbox(imageSrc) {
+    const lightbox = document.querySelector('.lightbox');
+    const lightboxImg = lightbox.querySelector('.lightbox-img');
     
-    // Keyboard navigation
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && lightbox.classList.contains('active')) {
-            lightbox.classList.remove('active');
-        }
-    });
+    if (lightbox && lightboxImg) {
+        lightboxImg.src = imageSrc;
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling when lightbox is open
+    }
 }
