@@ -57,6 +57,9 @@ function initializeWebsite() {
     
     // Gallery Tabs
     initGalleryTabs();
+
+    // Initialize Lightbox
+    initLightbox();
 }
 
 // Countdown Timer Function
@@ -206,4 +209,64 @@ function initGalleryTabs() {
     } else {
         console.warn('Gallery elements not found');
     }
+}
+
+
+// Lightbox functionality
+function initLightbox() {
+    // First, create the lightbox HTML structure if it doesn't exist
+    if (!document.querySelector('.lightbox')) {
+        const lightbox = document.createElement('div');
+        lightbox.className = 'lightbox';
+        lightbox.innerHTML = `
+            <div class="lightbox-close">&times;</div>
+            <div class="lightbox-content">
+                <img src="" alt="Fullscreen Image" class="lightbox-img">
+            </div>
+        `;
+        document.body.appendChild(lightbox);
+        
+        // Add click event to close the lightbox
+        const closeBtn = lightbox.querySelector('.lightbox-close');
+        closeBtn.addEventListener('click', function() {
+            lightbox.classList.remove('active');
+        });
+        
+        // Close lightbox when clicking outside the image
+        lightbox.addEventListener('click', function(e) {
+            if (e.target === lightbox) {
+                lightbox.classList.remove('active');
+            }
+        });
+    }
+    
+    // Get lightbox elements
+    const lightbox = document.querySelector('.lightbox');
+    const lightboxImg = lightbox.querySelector('.lightbox-img');
+    
+    // Add click event to couple image
+    const coupleImage = document.querySelector('.couple-image img');
+    if (coupleImage) {
+        coupleImage.addEventListener('click', function() {
+            lightboxImg.src = this.src;
+            lightbox.classList.add('active');
+        });
+    }
+    
+    // Add click events to all gallery images
+    const galleryImages = document.querySelectorAll('.gallery-item img');
+    galleryImages.forEach(img => {
+        img.addEventListener('click', function(e) {
+            e.preventDefault();
+            lightboxImg.src = this.src;
+            lightbox.classList.add('active');
+        });
+    });
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+            lightbox.classList.remove('active');
+        }
+    });
 }

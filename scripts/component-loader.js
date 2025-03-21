@@ -6,9 +6,9 @@
 $(document).ready(function() {
     // Components to load and their target containers
     const components = [
-        { path: 'components/header.html', target: '#header-content' },
         { path: 'components/navbar.html', target: '#navbar-content' },
         { path: 'components/home.html', target: '#home-content' },
+        { path: 'components/couple-intro.html', target: '#couple-intro-content' },
         { path: 'components/couple.html', target: '#couple-content' },
         { path: 'components/events.html', target: '#events-content' },
         { path: 'components/gallery.html', target: '#gallery-content' },
