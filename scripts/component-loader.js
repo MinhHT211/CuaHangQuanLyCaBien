@@ -2,7 +2,6 @@
  * Component Loader for Wedding Website
  * This script handles loading HTML components into the main index.html file
  */
-
 $(document).ready(function() {
     // Components to load and their target containers
     const components = [

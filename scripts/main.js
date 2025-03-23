@@ -134,7 +134,6 @@ function initRSVPForm() {
 
 // Function to send data to Google Sheets
 function sendToGoogleSheets(data, form, submitButton) {
-    // Replace with your Google Apps Script Web App URL
     const sheetsApiUrl = 'https://script.google.com/macros/s/AKfycbzGeglMs_ASOFiHaUFeTsdy8vrk9za2jXmUeLd7knQCkCA8d3J5bLsDkd10eTZOhNKipg/exec';
     
     fetch(sheetsApiUrl, {
