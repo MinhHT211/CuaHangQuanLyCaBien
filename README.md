@@ -6,33 +6,37 @@ A beautiful, responsive wedding website for Quốc Việt & Thanh Thủy's speci
 
 ```
 wedding-website/
-├── components/           # HTML components for each section
-│   ├── couple.html       # Our Story section
-│   ├── events.html       # Events section
-│   ├── footer.html       # Footer section
-│   ├── gallery.html      # Gallery section
-│   ├── header.html       # Header section
-│   ├── home.html         # Home/Hero section
-│   └── rsvp.html         # RSVP section
+│
+├── index.html               # Updated to include modular CSS and JS files
+│
 ├── css/
-│   └── main.css          # Main stylesheet
-├── images/               # Website images
-│   ├── couple.jpg        # Couple photo
-│   ├── event.jpg         # Event photo
-│   ├── hero-bg.jpg       # Hero background
-│   ├── rsvp-bg.jpg       # RSVP background
-│   └── gallery/          # Gallery images
-│       ├── journey/      # Images for "Hành trình" category
-│       ├── memories/     # Images for "Kỷ niệm" category
-│       ├── engagement/   # Images for "Lễ ăn hỏi" category
-│       └── wedding/      # Images for "Lễ thành hôn" category
+│   ├── base.css             # Core styles, variables, and resets
+│   ├── navigation.css       # Navigation styles
+│   ├── hero.css             # Hero section and countdown
+│   ├── couple.css           # Couple sections (intro and story)
+│   ├── events.css           # Event cards and details
+│   ├── gallery.css          # Gallery and lightbox
+│   ├── rsvp.css             # RSVP form
+│   └── footer.css           # Footer styles
+│
 ├── scripts/
-│   ├── main.js           # Main JavaScript file
-│   ├── component-loader.js # Loads HTML components
-│   └── jquery.min.js     # jQuery library
-├── index.html            # Main HTML file
-├── package.json          # Project configuration
-└── README.md             # This file
+│   ├── component-loader.js  # Updated component loader
+│   ├── core.js              # Core initialization
+│   ├── navigation.js        # Navigation functionality
+│   ├── countdown.js         # Countdown timer
+│   ├── gallery.js           # Gallery functionality
+│   ├── lightbox.js          # Lightbox functionality
+│   └── rsvp.js              # RSVP form handling
+│
+└── components/              # HTML components (nothing changed)
+    ├── navbar.html
+    ├── home.html
+    ├── couple-intro.html
+    ├── couple.html
+    ├── events.html
+    ├── gallery.html
+    ├── rsvp.html
+    └── footer.html
 ```
 
 ## Setup and Running
