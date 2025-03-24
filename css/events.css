@@ -1,3 +1,8 @@
+/**
+ * Events Styles
+ * Styles for the wedding events section
+ */
+
 .events {
     background-color: var(--light-color);
 }
@@ -26,9 +31,16 @@
     transform: translateY(-5px);
 }
 
-.event-image {
-    height: 250px;
-    background: url('../images/event.jpg') center/cover no-repeat;
+.event-image-container {
+    padding: 20px 20px 0 20px;
+    background-color: var(--secondary-color);
+}
+
+.event-img {
+    width: 100%;
+    border-radius: 8px;
+    max-height: 250px;
+    object-fit: cover;
 }
 
 .event-details {
@@ -57,16 +69,4 @@
     margin-top: 20px;
     line-height: 1.8;
     text-align: justify;
-}
-
-.event-image-container {
-    padding: 20px 20px 0 20px;
-    background-color: var(--secondary-color);
-}
-
-.event-img {
-    width: 100%;
-    border-radius: 8px;
-    max-height: 250px;
-    object-fit: cover;
 }

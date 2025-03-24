@@ -1,3 +1,9 @@
+/**
+ * Navigation Styles
+ * Navbar, menu, and mobile navigation
+ */
+
+/* Navigation */
 nav {
     position: fixed;
     top: 0;
@@ -53,4 +59,35 @@ nav.scrolled {
 .hamburger {
     display: none;
     cursor: pointer;
+}
+
+/* Responsive navigation */
+@media (max-width: 768px) {
+    .nav-container {
+        padding: 15px;
+    }
+    
+    .menu {
+        position: fixed;
+        top: 70px;
+        left: -100%;
+        width: 100%;
+        flex-direction: column;
+        background-color: var(--light-color);
+        padding: 20px 0;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        transition: left 0.3s ease;
+    }
+    
+    .menu.active {
+        left: 0;
+    }
+    
+    .menu li {
+        margin: 10px 0;
+    }
+    
+    .hamburger {
+        display: block;
+    }
 }

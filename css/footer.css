@@ -1,3 +1,8 @@
+/**
+ * Footer Styles
+ * Styles for the footer section
+ */
+
 footer {
     background-color: var(--dark-color);
     color: var(--light-color);

@@ -1,6 +1,12 @@
+/**
+ * Hero and Countdown Styles
+ * Hero section and countdown timer
+ */
+
+/* Hero Section */
 .hero {
     height: 100vh;
-    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('../images/hero-bg.jpg') center/cover no-repeat;
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('../images/hero-bg.JPG') center/cover no-repeat;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -71,4 +77,41 @@
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 2px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 3rem;
+    }
+    
+    .hero p {
+        font-size: 1.2rem;
+    }
+    
+    .countdown-item {
+        width: 100px;
+    }
+    
+    .countdown-number {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+    
+    .hero p {
+        font-size: 1rem;
+    }
+    
+    .countdown-item {
+        width: 80px;
+    }
+    
+    .countdown-number {
+        font-size: 2rem;
+    }
 }
