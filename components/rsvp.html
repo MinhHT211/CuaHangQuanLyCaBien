@@ -12,20 +12,11 @@
       <div class="form-group">
         <div class="guest-options">
           <div class="guest-option" onclick="RSVP.selectGuestType(this, 'bride')">
-            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4Z" stroke="#999" stroke-width="1.5"/>
-              <path d="M10 14H14C17.771 14 20 16.229 20 20V20H4V20C4 16.229 6.229 14 10 14Z" stroke="#999" stroke-width="1.5"/>
-              <path d="M10 9C10 9 11 10 12 10C13 10 14 9 14 9" stroke="#999" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
+            <img src="images/bride-icon.png" alt="Bride's Guest" class="guest-icon-img">
             <span class="guest-option-label">Bride's Guest</span>
           </div>
           <div class="guest-option" onclick="RSVP.selectGuestType(this, 'groom')">
-            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4Z" stroke="#999" stroke-width="1.5"/>
-              <path d="M10 14H14C17.771 14 20 16.229 20 20V20H4V20C4 16.229 6.229 14 10 14Z" stroke="#999" stroke-width="1.5"/>
-              <path d="M9 8H15" stroke="#999" stroke-width="1.5" stroke-linecap="round"/>
-              <path d="M10 10C10 10 11 11 12 11C13 11 14 10 14 10" stroke="#999" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
+            <img src="images/groom-icon.png" alt="Groom's Guest" class="guest-icon-img">
             <span class="guest-option-label">Groom's Guest</span>
           </div>
         </div>
@@ -39,12 +30,12 @@
         <label class="form-label">Will you be attending?</label>
         <div class="response-options">
           <div class="response-option" onclick="RSVP.selectResponse(this, 'yes')">
-            <div class="emoji">😊</div>
+            <div class="emoji">(´▽`ʃ♡ƪ)</div>
             <div class="response-text">Yeah!</div>
             <div class="response-subtext">Happily Accept</div>
           </div>
           <div class="response-option" onclick="RSVP.selectResponse(this, 'no')">
-            <div class="emoji">😔</div>
+            <div class="emoji">ಥ_ಥ</div>
             <div class="response-text">Oh!</div>
             <div class="response-subtext">Regretfully Decline</div>
           </div>
@@ -68,6 +59,7 @@
           <option value="2">Me + 1 Guest</option>
           <option value="3">Me + 2 Guests</option>
           <option value="4">Me + 3 Guests</option>
+          <option value="5">Me + 4 Guests</option>
         </select>
       </div>
       <div class="form-group">
