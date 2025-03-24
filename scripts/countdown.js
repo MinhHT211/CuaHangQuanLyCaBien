@@ -1,8 +1,9 @@
 /**
- * Countdown timer functionality for the wedding website
+ * Countdown Component
+ * Handles the wedding countdown timer
  */
-const Countdown = {
-    init: function() {
+const Countdown = (function() {
+    function init() {
         const daysElement = document.getElementById('days');
         const hoursElement = document.getElementById('hours');
         const minutesElement = document.getElementById('minutes');
@@ -34,4 +35,8 @@ const Countdown = {
             console.warn('Countdown elements not found');
         }
     }
-};
+    
+    return {
+        init: init
+    };
+})();

@@ -1,8 +1,9 @@
 /**
- * Navigation functionality for the wedding website
+ * Navigation Component
+ * Handles navigation and scroll effects
  */
-const Navigation = {
-    init: function() {
+const Navigation = (function() {
+    function init() {
         // Hamburger Menu Toggle
         $('#hamburger').click(function() {
             $('#menu').toggleClass('active');
@@ -41,4 +42,8 @@ const Navigation = {
             }
         });
     }
-};
+    
+    return {
+        init: init
+    };
+})();

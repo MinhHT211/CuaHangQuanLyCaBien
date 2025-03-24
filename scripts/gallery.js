@@ -1,8 +1,9 @@
 /**
- * Gallery functionality for the wedding website
+ * Gallery Component
+ * Handles gallery tabs and interactions
  */
-const Gallery = {
-    init: function() {
+const Gallery = (function() {
+    function init() {
         const galleryTabs = document.querySelectorAll('.gallery-tab');
         const galleryCategories = document.querySelectorAll('.gallery-category');
         
@@ -26,8 +27,22 @@ const Gallery = {
                     }
                 });
             });
+            
+            // Gallery Lightbox Effect (simplified version)
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            
+            galleryItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const imgSrc = item.querySelector('img').src;
+                    Lightbox.open(imgSrc);
+                });
+            });
         } else {
             console.warn('Gallery elements not found');
         }
     }
-};
+    
+    return {
+        init: init
+    };
+})();

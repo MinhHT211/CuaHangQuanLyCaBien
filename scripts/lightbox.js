@@ -1,8 +1,9 @@
 /**
- * Lightbox functionality for the wedding website
+ * Lightbox Component
+ * Handles lightbox functionality for images
  */
-const Lightbox = {
-    init: function() {
+const Lightbox = (function() {
+    function init() {
         // First, create the lightbox HTML structure if it doesn't exist
         if (!document.querySelector('.lightbox')) {
             const lightbox = document.createElement('div');
@@ -39,16 +40,16 @@ const Lightbox = {
             });
         }
         
-        // Setup all lightbox triggers
-        this.setupTriggers();
-    },
+        // Get all images that should trigger the lightbox
+        setupLightboxTriggers();
+    }
     
-    setupTriggers: function() {
+    function setupLightboxTriggers() {
         // Add click events to all portrait images in couple-intro section
         const portraitImages = document.querySelectorAll('.portrait-img');
         portraitImages.forEach(img => {
-            img.addEventListener('click', () => {
-                this.open(img.src);
+            img.addEventListener('click', function() {
+                open(this.src);
             });
             
             // Add cursor pointer style to make it clear they're clickable
@@ -58,22 +59,22 @@ const Lightbox = {
         // Add click event to couple image
         const coupleImage = document.querySelector('.couple-image img');
         if (coupleImage) {
-            coupleImage.addEventListener('click', () => {
-                this.open(coupleImage.src);
+            coupleImage.addEventListener('click', function() {
+                open(this.src);
             });
         }
         
         // Add click events to all gallery images
         const galleryImages = document.querySelectorAll('.gallery-item img');
         galleryImages.forEach(img => {
-            img.addEventListener('click', (e) => {
+            img.addEventListener('click', function(e) {
                 e.preventDefault();
-                this.open(img.src);
+                open(this.src);
             });
         });
-    },
+    }
     
-    open: function(imageSrc) {
+    function open(imageSrc) {
         const lightbox = document.querySelector('.lightbox');
         const lightboxImg = lightbox.querySelector('.lightbox-img');
         
@@ -83,4 +84,9 @@ const Lightbox = {
             document.body.style.overflow = 'hidden'; // Prevent scrolling when lightbox is open
         }
     }
-};
+    
+    return {
+        init: init,
+        open: open
+    };
+})();
