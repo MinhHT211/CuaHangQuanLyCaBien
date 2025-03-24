@@ -72,3 +72,4 @@ To deploy this website to a production server:
 - Fonts: Google Fonts (Dancing Script, Montserrat)
 - Icons: Font Awesome 6
 - Development: 2025
+- Massive credit to LamVD[ICT-Gen4], DungNT[WEO-Gen7] 
