@@ -29,8 +29,29 @@ $(document).ready(function() {
                 
                 // Initialize main.js functionality when all components are loaded
                 if (loadedComponents === components.length) {
+                    console.log('All components loaded, triggering initialization');
+                    
                     // Trigger an event to notify that all components are loaded
                     $(document).trigger('componentsLoaded');
+                    
+                    // Reinitialize after a delay to ensure everything is rendered
+                    setTimeout(function() {
+                        // Re-initialize key components with delays to ensure proper order
+                        if (typeof Lightbox !== 'undefined') {
+                            console.log('Re-initializing Lightbox');
+                            Lightbox.init();
+                        }
+                        
+                        if (typeof Gallery !== 'undefined') {
+                            console.log('Re-initializing Gallery');
+                            Gallery.reinitialize();
+                        }
+                        
+                        if (typeof Couple !== 'undefined') {
+                            console.log('Re-initializing Couple');
+                            Couple.init();
+                        }
+                    }, 1000);
                 }
             },
             error: function(xhr, status, error) {
