@@ -144,68 +144,106 @@ const Lightbox = (function() {
         }
     }
     
-    function open(src, alt = 'Gallery Image', galleryItems = [], index = 0) {
-        console.log('Lightbox.open() called for:', src);
-        
+function open(src, alt = 'Gallery Image', galleryItems = [], index = 0) {
+    console.log('Lightbox.open() called for:', src);
+    
+    if (isLoading) {
+        console.log('Still loading previous image, skipping');
+        return;
+    }
+    isLoading = true;
+    
+    // Safety timeout - reset loading state after 5 seconds no matter what
+    const safetyTimeout = setTimeout(() => {
         if (isLoading) {
-            console.log('Still loading previous image, skipping');
-            return;
-        }
-        isLoading = true;
-        
-        // Make sure lightbox is initialized
-        if (!isInitialized) {
-            init();
-        }
-        
-        // Store current gallery items and index for navigation
-        currentGalleryItems = galleryItems;
-        currentIndex = index;
-        
-        // Set image source and alt
-        lightboxImage.src = src;
-        lightboxImage.alt = alt;
-        lightboxImage.classList.remove('loaded');
-        
-        // Show loading indicator
-        const loadingIndicator = document.querySelector('.lightbox-loading');
-        if (loadingIndicator) loadingIndicator.style.display = 'block';
-        
-        // When image is loaded, hide loading indicator and show image
-        lightboxImage.onload = function() {
-            console.log('Lightbox image loaded');
-            // Hide loading indicator
-            const loadingIndicator = document.querySelector('.lightbox-loading');
-            if (loadingIndicator) loadingIndicator.style.display = 'none';
-            
-            // Show image
-            lightboxImage.classList.add('loaded');
+            console.log('Safety timeout reached, resetting loading state');
             isLoading = false;
-            
-            // Update navigation buttons visibility
-            updateNavigation();
-        };
+        }
+    }, 5000);
+    
+    // Make sure lightbox is initialized
+    if (!isInitialized) {
+        init();
+    }
+    
+    // Store current gallery items and index for navigation
+    currentGalleryItems = galleryItems;
+    currentIndex = index;
+    
+    // Remove any existing event listeners to prevent duplicates
+    if (lightboxImage) {
+        lightboxImage.onload = null;
+        lightboxImage.onerror = null;
+    }
+    
+    // Set image source and alt
+    lightboxImage.src = "";  // Clear the source first
+    lightboxImage.alt = alt;
+    lightboxImage.classList.remove('loaded');
+    
+    // Show loading indicator
+    const loadingIndicator = document.querySelector('.lightbox-loading');
+    if (loadingIndicator) loadingIndicator.style.display = 'block';
+    
+    // When image is loaded, hide loading indicator and show image
+    lightboxImage.onload = function() {
+        console.log('Lightbox image loaded');
+        // Clear the safety timeout since image loaded successfully
+        clearTimeout(safetyTimeout);
         
-        // Show lightbox
-        lightbox.classList.add('active');
+        // Hide loading indicator
+        const loadingIndicator = document.querySelector('.lightbox-loading');
+        if (loadingIndicator) loadingIndicator.style.display = 'none';
         
-        // Prevent page scrolling when lightbox is open
-        document.body.style.overflow = 'hidden';
-        
-        // Set up navigation buttons
-        const prevButton = document.querySelector('.lightbox-prev');
-        const nextButton = document.querySelector('.lightbox-next');
-        
-        if (prevButton) prevButton.addEventListener('click', prev);
-        if (nextButton) nextButton.addEventListener('click', next);
+        // Show image
+        lightboxImage.classList.add('loaded');
+        isLoading = false;
         
         // Update navigation buttons visibility
         updateNavigation();
-    }
+    };
+    
+    // Handle load errors
+    lightboxImage.onerror = function() {
+        console.error('Error loading image:', src);
+        clearTimeout(safetyTimeout);
+        isLoading = false;
+        // Don't automatically close on error - this was causing the immediate close
+        // Instead, display an error message
+        const loadingIndicator = document.querySelector('.lightbox-loading');
+        if (loadingIndicator) {
+            loadingIndicator.innerHTML = '<div class="error-message">Failed to load image</div>';
+        }
+    };
+    
+    // Show lightbox
+    lightbox.classList.add('active');
+    
+    // Prevent page scrolling when lightbox is open
+    document.body.style.overflow = 'hidden';
+    
+    // Set up navigation buttons
+    const prevButton = document.querySelector('.lightbox-prev');
+    const nextButton = document.querySelector('.lightbox-next');
+    
+    if (prevButton) prevButton.addEventListener('click', prev);
+    if (nextButton) nextButton.addEventListener('click', next);
+    
+    // Update navigation buttons visibility
+    updateNavigation();
+    
+    // Important: Set the src AFTER setting up the event handlers
+    setTimeout(() => {
+        lightboxImage.src = src;
+    }, 50);
+}
     
     function close() {
         console.log('Lightbox.close() called');
         if (!lightbox) return;
+        
+        // IMPORTANT - Reset loading flag immediately when closing
+        isLoading = false;
         
         // Hide lightbox
         lightbox.classList.remove('active');
