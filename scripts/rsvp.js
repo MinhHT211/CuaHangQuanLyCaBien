@@ -4,6 +4,7 @@
  */
 const RSVP = (function() {
     let guestType = 'groom'; // Default guest type
+    let messageTimeout; // Store timeout reference
     
     function init() {
         const rsvpForm = document.querySelector('.rsvp-form');
@@ -130,17 +131,55 @@ const RSVP = (function() {
                 selectResponse(firstResponseOption, 'yes');
             }
             
-            // Show success message to user
+            // Remove any existing success messages
+            clearAllSuccessMessages();
+            
+            // If there's an existing timeout, clear it
+            if (messageTimeout) {
+                clearTimeout(messageTimeout);
+            }
+            
+            // Show appropriate success message based on attending status
             const successMsg = document.createElement('div');
             successMsg.className = 'form-success-message';
-            successMsg.innerHTML = '<p>Thank you for your RSVP! We look forward to celebrating with you.</p>';
+            
+            if (data.attending === 'yes') {
+                successMsg.innerHTML = '<p>Thank you for your RSVP! We look forward to celebrating with you.</p>';
+            } else {
+                successMsg.innerHTML = '<p>Thank you for letting us know you cannot attend. We will miss you!</p>';
+            }
+            
+            // Add custom styling to the message
+            successMsg.style.padding = '15px';
+            successMsg.style.marginTop = '20px';
+            successMsg.style.backgroundColor = '#f0f9f0';
+            successMsg.style.borderLeft = '4px solid #4CAF50';
+            successMsg.style.borderRadius = '4px';
+            successMsg.style.opacity = '1';
+            successMsg.style.transition = 'opacity 1.5s ease-out';
+            
             form.appendChild(successMsg);
+            
+            // Set timeout to fade out the message after 5 seconds
+            messageTimeout = setTimeout(() => {
+                if (successMsg && successMsg.parentNode) {
+                    // Start fading out
+                    successMsg.style.opacity = '0';
+                    
+                    // Remove from DOM after fade completes
+                    setTimeout(() => {
+                        if (successMsg && successMsg.parentNode) {
+                            successMsg.remove();
+                        }
+                    }, 1500); // This matches the transition duration
+                }
+            }, 5000);
             
             // Re-enable button after a few seconds
             setTimeout(() => {
                 submitButton.disabled = false;
                 submitButton.innerHTML = 'Send RSVP';
-            }, 5000);
+            }, 2000);
         })
         .catch(error => {
             console.error('Error:', error);
@@ -148,6 +187,12 @@ const RSVP = (function() {
             submitButton.innerHTML = 'Send RSVP';
             alert('There was an error submitting your RSVP. Please try again.');
         });
+    }
+    
+    // Helper function to clear all success messages
+    function clearAllSuccessMessages() {
+        const messages = document.querySelectorAll('.form-success-message');
+        messages.forEach(msg => msg.remove());
     }
     
     return {
