@@ -7,7 +7,7 @@ A beautiful, responsive wedding website for Quốc Việt & Thanh Thủy's speci
 ```
 wedding-website/
 │
-├── index.html               # Updated to include modular CSS and JS files
+├── index.html               # Main HTML file with component placeholders
 │
 ├── css/
 │   ├── base.css             # Core styles, variables, and resets
@@ -15,36 +15,60 @@ wedding-website/
 │   ├── hero.css             # Hero section and countdown
 │   ├── couple.css           # Couple sections (intro and story)
 │   ├── events.css           # Event cards and details
-│   ├── gallery.css          # Gallery and lightbox
-│   ├── rsvp.css             # RSVP form
+│   ├── gallery.css          # Gallery styles
+│   ├── lightbox.css         # Lightbox styling
+│   ├── rsvp.css             # RSVP form styles
 │   └── footer.css           # Footer styles
 │
 ├── scripts/
-│   ├── component-loader.js  # Updated component loader
-│   ├── core.js              # Core initialization
+│   ├── component-loader.js  # Dynamic component loading
+│   ├── i18n.js  			 # International translation
+│   ├── core.js              # Core website initialization
 │   ├── navigation.js        # Navigation functionality
 │   ├── countdown.js         # Countdown timer
-│   ├── gallery.js           # Gallery functionality
-│   ├── lightbox.js          # Lightbox functionality
+│   ├── gallery.js           # Gallery management
+│   ├── lightbox.js          # Image lightbox functionality
+│   ├── couple.js            # Couple section interactions
+│   ├── events.js            # Events section functionality
 │   └── rsvp.js              # RSVP form handling
 │
-└── components/              # HTML components (nothing changed)
-    ├── navbar.html
-    ├── home.html
-    ├── couple-intro.html
-    ├── couple.html
-    ├── events.html
-    ├── gallery.html
-    ├── rsvp.html
-    └── footer.html
+├── components/              # Modular HTML components
+│   ├── navbar.html          # Navigation bar
+│   ├── home.html            # Hero and countdown sections
+│   ├── couple-intro.html    # Couple introduction
+│   ├── couple.html          # Couple love story
+│   ├── events.html          # Wedding events
+│   ├── gallery.html         # Photo gallery
+│   ├── rsvp.html            # RSVP form
+│   └── footer.html          # Page footer
+│
+│
+└── images/                  # Image assets
+    ├── favicon/             # Favicon images
+    ├── gallery/             # Photo gallery images
+    │   ├── engagement/
+    │   │   ├── thumbnails/
+    │   │   └── full/
+    ├── flags/               # Language flag icons
+    └── ... (other images)
 ```
+
+## Key Features
+
+- Modular component-based architecture
+- Responsive design
+- Dynamic content loading
+- Interactive gallery with lightbox
+- RSVP form with Google Sheets integration
+- Bilingual support (English/Vietnamese)
 
 ## Setup and Running
 
-1. Install Node.js and npm if you haven't already.
-2. Run `npm install` to install dependencies.
-3. Run `npm start` to start a local development server.
-4. Visit `http://localhost:8080` in your browser.
+1. Clone the repository
+2. Install Node.js and npm if you haven't already.
+3. Run `npm install` to install dependencies.
+4. Run `npm start` to start a local development server.
+5. Visit `http://localhost:8080` in your browser.
 
 ## Implementation Notes
 
@@ -66,6 +90,16 @@ To deploy this website to a production server:
 1. Upload all files and folders to your web hosting service.
 2. Make sure your hosting service supports serving HTML, CSS, and JavaScript files.
 3. If you're using a service that doesn't support client-side includes, you may need to combine all HTML components into a single file.
+
+## Performance Optimization
+
+For faster loading and better performance:
+- Resize images to optimize display and efficiency
+- Use image compression to reduce file sizes
+- Recommended ImageMagick command:
+  ```
+  mogrify -resize "600x600>" -quality 80 *.jpg
+  ```
 
 ## Credits
 
