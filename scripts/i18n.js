@@ -368,8 +368,21 @@ const I18n = (function() {
 		
 		// Update submit button
 		const submitButton = rsvpSection.querySelector('.form-button');
-		if (submitButton && submitButton.textContent.toLowerCase().includes('send')) {
-			submitButton.textContent = t.rsvp.form.submit;
+		if (submitButton) {
+			// Always update the button text based on its current state
+			if (submitButton.disabled && submitButton.textContent.includes('Send') || 
+				submitButton.textContent.includes('Gửi')) {
+				submitButton.textContent = t.rsvp.form.submit;
+			} else if (submitButton.textContent.includes('Sending') || 
+					  submitButton.textContent.includes('Đang')) {
+				submitButton.textContent = t.rsvp.form.sending;
+			} else if (submitButton.textContent.includes('Sent') || 
+					  submitButton.textContent.includes('Đã')) {
+				submitButton.textContent = t.rsvp.form.sent;
+			} else {
+				// Default state
+				submitButton.textContent = t.rsvp.form.submit;
+			}
 		}
 	}
 
@@ -456,3 +469,5 @@ document.addEventListener('componentsLoaded', function() {
 		I18n.setupLanguageSwitcher();
 	}
 });
+
+window.I18n = I18n;
