@@ -1,0 +1,47 @@
+{
+	"nav": {
+		"home": "HOME",
+		"couple": "THE COUPLE",
+		"story": "OUR STORY",
+		"events": "EVENTS",
+		"gallery": "ALBUM",
+		"rsvp": "RSVP"
+	},
+	"sections": {
+		"couple": {
+			"title": "The Couple",
+			"subtitle": "We're excited to celebrate our special day with you"
+		},
+		"story": {
+			"title": "Our Love Story",
+			"subtitle": "How we met and fell in love" 
+		},
+		"events": {
+			"title": "Wedding Events",
+			"subtitle": "Join us to celebrate our special day"
+		},
+		"gallery": {
+			"title": "Gallery",
+			"subtitle": "Our memorable moments"
+		},
+		"rsvp": {
+			"title": "RSVP",
+			"subtitle": "Please let us know if you'll be attending, so we can arrange the seating. ( •̀ ω •́ )✧"
+		}
+	},
+	"home": {
+		"hero": {
+			"title": "Quốc Việt & Thanh Thủy",
+			"message": "We're getting married!",
+			"date": "MAY 8, 2025",
+			"rsvp_button": "RSVP"
+		},
+		"countdown": {
+			"title": "Counting Down to Our Big Day",
+			"days": "DAYS",
+			"hours": "HOURS",
+			"minutes": "MINUTES",
+			"seconds": "SECONDS"
+	  	}
+	}
+}
