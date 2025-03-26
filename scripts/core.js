@@ -11,6 +11,9 @@ $(document).on('componentsLoaded', function() {
 
 function initializeWebsite() {
     console.log('Initializing website functionality');
+
+    // Initialize I18n
+    if (typeof I18n !== 'undefined') I18n.init();
     
     // Initialize components in specific order
     if (typeof Navigation !== 'undefined') Navigation.init();
