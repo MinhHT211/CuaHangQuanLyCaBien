@@ -137,7 +137,6 @@ const Gallery = (function() {
         }
     }
     
-    // Public API
     return {
         init: init,
         reinitialize: function() {

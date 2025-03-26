@@ -1,69 +1,69 @@
 .lightbox {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.9);
-    z-index: 2000;
-    justify-content: center;
-    align-items: center;
-    padding: 40px;
-    box-sizing: border-box;
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.9);
+	z-index: 2000;
+	justify-content: center;
+	align-items: center;
+	padding: 40px;
+	box-sizing: border-box;
 }
 
 .lightbox.active {
-    display: flex;
+	display: flex;
 }
 
 .lightbox-content {
-    position: relative;
-    max-width: 90%;
-    max-height: 90%;
+	position: relative;
+	max-width: 90%;
+	max-height: 90%;
 }
 
 .lightbox-img {
-    display: block;
-    max-width: 100%;
-    max-height: 90vh;
-    margin: 0 auto;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+	display: block;
+	max-width: 100%;
+	max-height: 90vh;
+	margin: 0 auto;
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
 .lightbox-close {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    color: #fff;
-    font-size: 30px;
-    cursor: pointer;
-    z-index: 2001;
-    background-color: rgba(0, 0, 0, 0.5);
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	color: #fff;
+	font-size: 30px;
+	cursor: pointer;
+	z-index: 2001;
+	background-color: rgba(0, 0, 0, 0.5);
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .lightbox-close:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+	background-color: rgba(255, 255, 255, 0.1);
 }
 
 .lightbox-image {
-    cursor: pointer;
+	cursor: pointer;
 }
 
 /* Image hover effect for all gallery items */
 .gallery-item, .couple-image {
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
+	position: relative;
+	overflow: hidden;
+	cursor: pointer;
 }
 
 .gallery-item:hover .gallery-image,
 .couple-image:hover img {
-    transform: scale(1.05);
+	transform: scale(1.05);
 }
