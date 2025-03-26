@@ -123,8 +123,22 @@ const I18n = (function() {
 		});
 		
 		// Update section headers
-		console.log('Updating section headers');
 		updateSectionHeaders(t);
+		
+		// Update home section
+		updateHomeSection(t);
+
+		// Update couple intro
+		updateCoupleIntro(t);
+
+		// Update couple section content
+		updateCoupleSection(t);
+
+		// Update events section content
+		updateEventsSection();
+		
+		// Update RSVP form
+		updateRSVPForm(t);
 	}
 	
 	function updateSectionHeaders(t) {
@@ -163,27 +177,6 @@ const I18n = (function() {
 		}
 	}
 
-function updateUI() {
-	const lang = currentLang;
-	const t = translations[lang];
-	
-	if (!t) return;
-	
-	// Update navigation items
-	document.querySelectorAll('.nav-link').forEach(link => {
-		const key = link.getAttribute('data-' + lang);
-		if (key) {
-			link.textContent = key;
-		}
-	});
-	
-	// Update section headers
-	updateSectionHeaders(t);
-	
-	// Update home section
-	updateHomeSection(t);
-}
-
 	function updateHomeSection(t) {
 		// Hero section
 		const heroContent = document.querySelector('.hero-content');
@@ -215,6 +208,171 @@ function updateUI() {
 			if (secondsText) secondsText.textContent = t.home.countdown.seconds;
 		}
 	}
+
+	function updateCoupleIntro(t) {
+		// Update groom info
+		const groomTitle = document.querySelector('.person-card:nth-child(1) .person-title');
+		const groomDesc = document.querySelector('.person-card:nth-child(1) .person-desc p');
+		
+		if (groomTitle && t.coupleIntro && t.coupleIntro.groom) {
+			groomTitle.textContent = t.coupleIntro.groom.title;
+		}
+		
+		if (groomDesc && t.coupleIntro && t.coupleIntro.groom) {
+			groomDesc.textContent = t.coupleIntro.groom.description;
+		}
+		
+		// Update bride info
+		const brideTitle = document.querySelector('.person-card:nth-child(2) .person-title');
+		const brideDesc = document.querySelector('.person-card:nth-child(2) .person-desc p');
+		
+		if (brideTitle && t.coupleIntro && t.coupleIntro.bride) {
+			brideTitle.textContent = t.coupleIntro.bride.title;
+		}
+		
+		if (brideDesc && t.coupleIntro && t.coupleIntro.bride) {
+			brideDesc.textContent = t.coupleIntro.bride.description;
+		}
+	}
+
+	function updateCoupleSection(t) {
+		// Get the couple section
+		const coupleSection = document.getElementById('couple');
+		if (!coupleSection) return;
+		
+		// Get elements to translate
+		const heading = coupleSection.querySelector('h3');
+		const paragraphs = coupleSection.querySelectorAll('.couple-text p');
+		const photoCaption = coupleSection.querySelector('.couple-image-caption p strong');
+		
+		// Update the heading
+		if (heading && t.couple && t.couple.heading) {
+			heading.textContent = t.couple.heading;
+		}
+		
+		// Update paragraphs
+		if (paragraphs && paragraphs.length >= 3 && t.couple) {
+			if (t.couple.paragraph1) paragraphs[0].textContent = t.couple.paragraph1;
+			if (t.couple.paragraph2) paragraphs[1].textContent = t.couple.paragraph2;
+			if (t.couple.paragraph3) paragraphs[2].textContent = t.couple.paragraph3;
+		}
+		
+		// Update photo caption
+		if (photoCaption && t.couple && t.couple.photoCaption) {
+			photoCaption.textContent = t.couple.photoCaption;
+		}
+	}
+
+	function updateEventsSection() {
+		const eventSection = document.getElementById('events');
+		if (!eventSection) return;
+		
+		const lang = currentLang;
+		const t = translations[lang];
+		
+		if (!t || !t.event) return;
+		
+		// Update event title
+		const eventTitle = eventSection.querySelector('.event-title');
+		if (eventTitle) {
+			eventTitle.textContent = t.event.title;
+		}
+		
+		// Update event date
+		const eventDate = eventSection.querySelector('.event-info:nth-child(2) span');
+		if (eventDate) {
+			eventDate.textContent = t.event.date;
+		}
+		
+		// Update event venue
+		const eventVenue = eventSection.querySelector('.event-info:nth-child(3) span');
+		if (eventVenue) {
+			eventVenue.textContent = t.event.venue;
+		}
+		
+		// Update event address
+		const eventAddress = eventSection.querySelector('.event-info:nth-child(4) span');
+		if (eventAddress) {
+			eventAddress.textContent = t.event.address;
+		}
+		
+		// Update event description
+		const eventDescription = eventSection.querySelector('.event-description');
+		if (eventDescription) {
+			eventDescription.textContent = t.event.description;
+		}
+	}
+
+	function updateRSVPForm(t) {
+		const rsvpSection = document.getElementById('rsvp');
+		if (!rsvpSection) return;
+		
+		// Update guest type labels
+		const brideGuestLabel = rsvpSection.querySelector('.guest-option:nth-child(1) .guest-option-label');
+		const groomGuestLabel = rsvpSection.querySelector('.guest-option:nth-child(2) .guest-option-label');
+		
+		if (brideGuestLabel) brideGuestLabel.textContent = t.rsvp.guestType.bride;
+		if (groomGuestLabel) groomGuestLabel.textContent = t.rsvp.guestType.groom;
+		
+		// Update form labels
+		const nameLabel = rsvpSection.querySelector('label[for="name"]');
+		if (nameLabel) nameLabel.textContent = t.rsvp.form.fullName;
+		
+		const attendingLabel = rsvpSection.querySelector('.form-label:nth-of-type(2)');
+		if (attendingLabel) attendingLabel.textContent = t.rsvp.form.attending;
+		
+		// Update response options
+		const yesOption = rsvpSection.querySelector('.response-option:nth-child(1)');
+		const noOption = rsvpSection.querySelector('.response-option:nth-child(2)');
+		
+		if (yesOption) {
+			const emoji = yesOption.querySelector('.emoji');
+			const text = yesOption.querySelector('.response-text');
+			const subtext = yesOption.querySelector('.response-subtext');
+			
+			if (emoji) emoji.textContent = t.rsvp.form.yes.emoji;
+			if (text) text.textContent = t.rsvp.form.yes.text;
+			if (subtext) subtext.textContent = t.rsvp.form.yes.subtext;
+		}
+		
+		if (noOption) {
+			const emoji = noOption.querySelector('.emoji');
+			const text = noOption.querySelector('.response-text');
+			const subtext = noOption.querySelector('.response-subtext');
+			
+			if (emoji) emoji.textContent = t.rsvp.form.no.emoji;
+			if (text) text.textContent = t.rsvp.form.no.text;
+			if (subtext) subtext.textContent = t.rsvp.form.no.subtext;
+		}
+		
+		// Update guest count
+		const guestCountLabel = rsvpSection.querySelector('label[for="guests"]');
+		if (guestCountLabel) guestCountLabel.textContent = t.rsvp.form.guestCount;
+		
+		// Update guest options in dropdown
+		const guestSelect = rsvpSection.querySelector('#guests');
+		if (guestSelect) {
+			const options = guestSelect.querySelectorAll('option');
+			if (options.length >= 5) {
+				options[0].textContent = t.rsvp.form.guestOptions.justMe;
+				options[1].textContent = t.rsvp.form.guestOptions.plusOne;
+				options[2].textContent = t.rsvp.form.guestOptions.plusTwo;
+				options[3].textContent = t.rsvp.form.guestOptions.plusThree;
+				options[4].textContent = t.rsvp.form.guestOptions.plusFour;
+			}
+		}
+		
+		// Update message label
+		const messageLabel = rsvpSection.querySelector('label[for="message"]');
+		if (messageLabel) messageLabel.textContent = t.rsvp.form.message;
+		
+		// Update submit button
+		const submitButton = rsvpSection.querySelector('.form-button');
+		if (submitButton && submitButton.textContent.toLowerCase().includes('send')) {
+			submitButton.textContent = t.rsvp.form.submit;
+		}
+	}
+
 	
 	// Get translation for a specific key
 	function t(key) {
