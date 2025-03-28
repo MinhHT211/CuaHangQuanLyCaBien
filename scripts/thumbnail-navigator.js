@@ -1,6 +1,5 @@
 /**
  * Enhanced Thumbnail Navigator
- * Fixes selection highlighting and ensures all thumbnails are visible
  */
 (function() {
     // Store thumbnail state
