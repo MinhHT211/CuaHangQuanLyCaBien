@@ -1,0 +1,204 @@
+/**
+ * Gallery Thumbnails CSS
+ * Styles for the Facebook-style gallery thumbnail navigation
+ * Updated with fixes for all identified issues
+ */
+
+/* Thumbnail container */
+.gallery-thumbnails-container {
+    position: relative;
+    width: 95%;
+    margin: 15px auto 30px;
+    background-color: rgba(249, 243, 240, 0.7);
+    border-radius: 8px;
+    padding: 12px 40px; /* Increased padding to accommodate navigation buttons */
+    overflow: hidden;
+    text-align: center; /* Center the thumbnails */
+}
+
+/* Thumbnail strip */
+.gallery-thumbnails {
+    display: flex; /* Changed to regular flex for better layout control */
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding-bottom: 5px; /* Space for scrollbar */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    max-width: 100%; /* Ensure it doesn't overflow the container */
+    justify-content: center; /* Center the thumbnails */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.gallery-thumbnails::-webkit-scrollbar {
+    display: none;
+}
+
+/* Individual thumbnails */
+.gallery-thumbnail {
+    width: 55px;
+    height: 42px;
+    flex: 0 0 auto;
+    margin: 0 3px; /* Slightly increased margin for better spacing */
+    border: 2px solid transparent;
+    border-radius: 3px;
+    overflow: hidden;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.gallery-thumbnail:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+}
+
+.gallery-thumbnail.active {
+    border-color: #d4b08c;
+    box-shadow: 0 0 5px rgba(212, 176, 140, 0.5);
+    opacity: 1;
+}
+
+.gallery-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Lightbox thumbnails */
+.lightbox-thumbnails-container {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 900px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    padding: 10px 40px; /* Increased padding for navigation buttons */
+    display: flex;
+    justify-content: space-between; /* Changed to space-between for better layout */
+    align-items: center;
+    z-index: 2001;
+}
+
+.lightbox-thumbnails {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    width: 100%;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    justify-content: flex-start; /* Start from the left to ensure first thumbnail is visible */
+    align-items: center;
+}
+
+.lightbox-thumbnails::-webkit-scrollbar {
+    display: none;
+}
+
+.lightbox-thumbnail {
+    width: 55px;
+    height: 42px;
+    flex: 0 0 auto;
+    margin: 0 3px;
+    border: 2px solid transparent;
+    border-radius: 3px;
+    overflow: hidden;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: all 0.2s ease;
+}
+
+.lightbox-thumbnail:hover {
+    opacity: 0.9;
+}
+
+.lightbox-thumbnail.active {
+    border-color: white;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    opacity: 1;
+}
+
+.lightbox-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Navigation buttons */
+.thumb-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    font-size: 14px;
+    color: #333;
+    transition: all 0.2s ease;
+}
+
+.thumb-nav-btn:hover {
+    background-color: rgba(255, 255, 255, 1);
+}
+
+.thumb-prev {
+    left: 5px;
+}
+
+.thumb-next {
+    right: 5px;
+}
+
+/* Adjust main gallery display to add space for thumbnails */
+.gallery-container {
+    margin-top: 15px;
+}
+
+/* Loading indicator */
+.thumbnail-loading {
+    text-align: center;
+    padding: 10px;
+    color: #888;
+    font-style: italic;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .gallery-thumbnail,
+    .lightbox-thumbnail {
+        width: 45px;
+        height: 35px;
+    }
+    
+    .gallery-thumbnails-container,
+    .lightbox-thumbnails-container {
+        padding: 8px 35px;
+    }
+}
+
+@media (max-width: 480px) {
+    .gallery-thumbnail,
+    .lightbox-thumbnail {
+        width: 40px;
+        height: 30px;
+    }
+    
+    .thumb-nav-btn {
+        width: 25px;
+        height: 25px;
+    }
+    
+    .gallery-thumbnails-container,
+    .lightbox-thumbnails-container {
+        padding: 6px 30px;
+    }
+}
