@@ -30,7 +30,10 @@
             // Check if a gallery item was clicked
             if (e.target.closest('.gallery-item') || e.target.closest('.gallery-overlay')) {
                 // Wait for lightbox to open
-                setTimeout(fixLightboxThumbnails, 200);
+                setTimeout(function() {
+                    fixLightboxThumbnails();
+                    hideLightboxNavButtons();
+                }, 200);
             }
         });
         
@@ -38,7 +41,10 @@
         document.addEventListener('click', function(e) {
             if (e.target.closest('.lightbox-prev') || e.target.closest('.lightbox-next')) {
                 // Wait for image to change
-                setTimeout(fixLightboxThumbnails, 100);
+                setTimeout(function() {
+                    fixLightboxThumbnails();
+                    hideLightboxNavButtons();
+                }, 100);
             }
         });
         
@@ -49,9 +55,52 @@
             
             if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
                 // Wait for image to change
-                setTimeout(fixLightboxThumbnails, 100);
+                setTimeout(function() {
+                    fixLightboxThumbnails();
+                    hideLightboxNavButtons();
+                }, 100);
             }
         });
+        
+        // Add style to hide lightbox navigation buttons
+        addLightboxNavHideStyle();
+    }
+    
+    /**
+     * Hide lightbox navigation buttons
+     */
+    function hideLightboxNavButtons() {
+        const lightbox = document.querySelector('.lightbox.active');
+        if (!lightbox) return;
+        
+        const navButtons = lightbox.querySelectorAll('.lightbox-prev, .lightbox-next, .lightbox-nav');
+        navButtons.forEach(button => {
+            button.style.display = 'none';
+            button.style.visibility = 'hidden';
+            button.style.opacity = '0';
+            button.style.pointerEvents = 'none';
+        });
+    }
+    
+    /**
+     * Add style to hide lightbox navigation buttons
+     */
+    function addLightboxNavHideStyle() {
+        if (!document.getElementById('hide-lightbox-nav-buttons')) {
+            const style = document.createElement('style');
+            style.id = 'hide-lightbox-nav-buttons';
+            style.textContent = `
+                .lightbox.active .lightbox-prev,
+                .lightbox.active .lightbox-next,
+                .lightbox.active .lightbox-nav {
+                    display: none !important;
+                    visibility: hidden !important;
+                    opacity: 0 !important;
+                    pointer-events: none !important;
+                }
+            `;
+            document.head.appendChild(style);
+        }
     }
     
     /**
@@ -69,6 +118,7 @@
                 
                 // Apply our fixes
                 fixLightboxThumbnails();
+                hideLightboxNavButtons();
             };
             
             if (DEBUG) console.log('Enhanced createLightboxThumbnails function');
@@ -102,59 +152,14 @@
         const activeIndex = Array.from(thumbnails).indexOf(activeThumb);
         if (DEBUG) console.log(`Active thumbnail index: ${activeIndex}`);
         
-        // Improve the left scroll button functionality
-        const leftButton = lightbox.querySelector('.thumb-nav-btn.thumb-prev');
-        if (leftButton) {
-            // Remove existing event listeners
-            const newLeftButton = leftButton.cloneNode(true);
-            leftButton.parentNode.replaceChild(newLeftButton, leftButton);
-            
-            // Add a better scroll handler
-            newLeftButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                // Scroll by a fixed amount, or directly to the first thumbnail if nearly at the beginning
-                if (thumbnailsStrip.scrollLeft < 200) {
-                    thumbnailsStrip.scrollLeft = 0;
-                } else {
-                    thumbnailsStrip.scrollLeft -= 200;
-                }
-                
-                if (DEBUG) console.log(`Scrolled left to: ${thumbnailsStrip.scrollLeft}`);
-            });
-        }
-        
-        // Improve the right scroll button functionality
-        const rightButton = lightbox.querySelector('.thumb-nav-btn.thumb-next');
-        if (rightButton) {
-            // Remove existing event listeners
-            const newRightButton = rightButton.cloneNode(true);
-            rightButton.parentNode.replaceChild(newRightButton, rightButton);
-            
-            // Add a better scroll handler
-            newRightButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const maxScroll = thumbnailsStrip.scrollWidth - thumbnailsStrip.clientWidth;
-                
-                // Scroll by a fixed amount, or to the end if nearly there
-                if (thumbnailsStrip.scrollLeft > maxScroll - 200) {
-                    thumbnailsStrip.scrollLeft = maxScroll;
-                } else {
-                    thumbnailsStrip.scrollLeft += 200;
-                }
-                
-                if (DEBUG) console.log(`Scrolled right to: ${thumbnailsStrip.scrollLeft}`);
-            });
-        }
+        // Make navigation buttons in lightbox hidden
+        hideLightboxNavButtons();
         
         // Ensure we can see thumbnails including the first one by adjusting CSS
         const thumbnailStyles = document.createElement('style');
         thumbnailStyles.textContent = `
             .lightbox-thumbnails-container {
-                padding: 10px 40px;
+                padding: 10px 10px;
             }
             
             .lightbox-thumbnails {
@@ -173,7 +178,13 @@
             }
             
             .lightbox-thumbnails::-webkit-scrollbar {
-                display: none !important;
+                height: 4px;
+                background: rgba(0, 0, 0, 0.1);
+            }
+            
+            .lightbox-thumbnails::-webkit-scrollbar-thumb {
+                background: rgba(255, 255, 255, 0.3);
+                border-radius: 4px;
             }
             
             .lightbox-thumbnail {
@@ -185,37 +196,13 @@
                 border: 2px solid white !important;
                 opacity: 1 !important;
             }
-            
-            .thumb-nav-btn {
-                position: absolute !important;
-                top: 50% !important;
-                transform: translateY(-50%) !important;
-                z-index: 9999 !important;
-                width: 30px !important;
-                height: 30px !important;
-                background-color: rgba(255, 255, 255, 0.5) !important;
-                border-radius: 50% !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                cursor: pointer !important;
-            }
-            
-            .thumb-nav-btn:hover {
-                background-color: rgba(255, 255, 255, 0.8) !important;
-            }
-            
-            .thumb-prev {
-                left: 5px !important;
-            }
-            
-            .thumb-next {
-                right: 5px !important;
-            }
         `;
         
-        // Add the styles to the document head
-        document.head.appendChild(thumbnailStyles);
+        // Add the styles to the document head if not already there
+        if (!document.getElementById('lightbox-thumbnail-styles')) {
+            thumbnailStyles.id = 'lightbox-thumbnail-styles';
+            document.head.appendChild(thumbnailStyles);
+        }
         
         // Ensure all thumbnails are visible (fix missing first thumbnail)
         setTimeout(function() {
@@ -232,6 +219,9 @@
             }
             
             if (DEBUG) console.log(`Final scroll position: ${thumbnailsStrip.scrollLeft}`);
+            
+            // Make sure navigation buttons stay hidden
+            hideLightboxNavButtons();
         }, 50);
     }
 })();
