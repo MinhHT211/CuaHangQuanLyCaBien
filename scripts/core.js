@@ -7,6 +7,7 @@
 $(document).on('componentsLoaded', function() {
     console.log('componentsLoaded event triggered - initializing website');
     initializeWebsite();
+    checkWebPSupport();
 });
 
 function initializeWebsite() {
@@ -32,6 +33,19 @@ function initializeWebsite() {
         // Final check - directly attach click handlers to key elements
         attachAdditionalEventHandlers();
     }, 300);
+}
+
+function checkWebPSupport() {
+    const testWebP = new Image();
+    testWebP.onload = function() {
+        // WebP is supported, add class to document
+        document.documentElement.classList.add('webp');
+    };
+    testWebP.onerror = function() {
+        // WebP is not supported, use fallback
+        document.documentElement.classList.add('no-webp');
+    };
+    testWebP.src = 'data:image/webp;base64,UklGRiQAAABXRUJQVlA4IBgAAAAwAQCdASoBAAEAAwA0JaQAA3AA/vuUAAA=';
 }
 
 function attachAdditionalEventHandlers() {

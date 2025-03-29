@@ -15,6 +15,14 @@
 	position: relative;
 }
 
+html.webp .hero {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('../images/hero-bg.webp');
+}
+
+html.no-webp .hero {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('../images/hero-bg.JPG');
+}
+
 .hero-content {
 	max-width: 800px;
 	padding: 0 20px;
