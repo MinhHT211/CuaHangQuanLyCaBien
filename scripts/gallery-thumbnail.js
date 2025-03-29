@@ -13,6 +13,8 @@
     let currentIndex = 0;
     let allGalleryItems = {};
     let isInitialized = false;
+    let initAttempts = 0;
+    const MAX_INIT_ATTEMPTS = 5;
     
     /**
      * Main initialization function
@@ -20,26 +22,35 @@
     function initialize() {
         if (isInitialized) return;
         
-        console.log('Initializing complete gallery fix');
+        console.log('Initializing gallery thumbnail navigation');
         
-        // Set up event listeners for tab switching
-        setupTabListeners();
-        
-        // Initialize the first active tab
+        // Find active tab
         const activeTab = document.querySelector('.gallery-tab.active');
         if (activeTab) {
             const category = activeTab.getAttribute('data-category');
             activeGalleryCategory = category;
+            
+            // Find gallery container
+            const galleryContainer = document.getElementById(category);
+            if (galleryContainer) {
+                // If we have both an active tab and its container, proceed
+                setupTabListeners();
+                createThumbnailsForActiveCategory(true);
+                enhanceLightbox();
+                isInitialized = true;
+                console.log('Gallery thumbnail navigation initialized successfully');
+                return;
+            }
         }
         
-        // Force thumbnail creation for the active tab
-        createThumbnailsForActiveCategory(true);
-        
-        // Set up lightbox events
-        enhanceLightbox();
-        
-        // Mark as initialized
-        isInitialized = true;
+        // If initialization failed and we haven't reached max attempts, try again
+        if (initAttempts < MAX_INIT_ATTEMPTS) {
+            initAttempts++;
+            console.log(`Gallery initialization attempt ${initAttempts} failed, retrying in 300ms`);
+            setTimeout(initialize, 300);
+        } else {
+            console.warn('Gallery initialization failed after maximum attempts');
+        }
     }
     
     /**
@@ -252,6 +263,22 @@
     }
     
     /**
+     * Hide lightbox navigation buttons
+     */
+    function hideLightboxNavButtons() {
+        const lightbox = document.querySelector('.lightbox.active');
+        if (!lightbox) return;
+        
+        const navButtons = lightbox.querySelectorAll('.lightbox-prev, .lightbox-next, .lightbox-nav');
+        navButtons.forEach(button => {
+            button.style.display = 'none';
+            button.style.visibility = 'hidden';
+            button.style.opacity = '0';
+            button.style.pointerEvents = 'none';
+        });
+    }
+    
+    /**
      * Enhance lightbox functionality
      */
     function enhanceLightbox() {
@@ -279,6 +306,9 @@
                 
                 // Also update the gallery thumbnails
                 updateActiveThumbnail();
+                
+                // Hide navigation buttons
+                hideLightboxNavButtons();
             }, 100);
         };
         
@@ -296,6 +326,9 @@
                     // Update thumbnails
                     updateActiveThumbnail();
                     updateLightboxThumbnails();
+                    
+                    // Hide navigation buttons
+                    hideLightboxNavButtons();
                 }
             };
         }
@@ -313,6 +346,9 @@
                     // Update thumbnails
                     updateActiveThumbnail();
                     updateLightboxThumbnails();
+                    
+                    // Hide navigation buttons
+                    hideLightboxNavButtons();
                 }
             };
         }
@@ -341,15 +377,38 @@
                     currentIndex++;
                     updateActiveThumbnail();
                     updateLightboxThumbnails();
+                    
+                    // Hide navigation buttons
+                    hideLightboxNavButtons();
                 }
             } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
                 if (currentIndex > 0) {
                     currentIndex--;
                     updateActiveThumbnail();
                     updateLightboxThumbnails();
+                    
+                    // Hide navigation buttons
+                    hideLightboxNavButtons();
                 }
             }
         });
+        
+        // Add CSS to hide navigation buttons in lightbox
+        if (!document.getElementById('hide-lightbox-nav-style')) {
+            const style = document.createElement('style');
+            style.id = 'hide-lightbox-nav-style';
+            style.textContent = `
+                .lightbox.active .lightbox-prev,
+                .lightbox.active .lightbox-next,
+                .lightbox.active .lightbox-nav {
+                    display: none !important;
+                    visibility: hidden !important;
+                    opacity: 0 !important;
+                    pointer-events: none !important;
+                }
+            `;
+            document.head.appendChild(style);
+        }
     }
     
     /**
@@ -463,6 +522,9 @@
                 // Update active states
                 updateLightboxThumbnails();
                 updateActiveThumbnail();
+                
+                // Hide navigation buttons
+                hideLightboxNavButtons();
             });
             
             // Add to strip
@@ -470,7 +532,7 @@
         });
         
         // Scroll to active thumbnail
-        setTimeout(() => {
+        setTimeout(function() {
             const activeThumb = thumbsStrip.querySelector('.lightbox-thumbnail.active');
             if (activeThumb) {
                 const stripWidth = thumbsStrip.offsetWidth;
@@ -479,6 +541,9 @@
                 const scrollPos = activeThumb.offsetLeft - (stripWidth / 2) + (thumbWidth / 2);
                 thumbsStrip.scrollLeft = Math.max(0, scrollPos);
             }
+            
+            // Hide navigation buttons
+            hideLightboxNavButtons();
         }, 50);
     }
     
@@ -539,20 +604,33 @@
                 }
             }
         }
+        
+        // Hide navigation buttons
+        hideLightboxNavButtons();
     }
     
-    // Initialize immediately if document is already loaded
-    if (document.readyState === 'complete' || document.readyState === 'interactive') {
-        setTimeout(initialize, 100);
-    } else {
-        // Otherwise wait for document to load
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(initialize, 100);
+    // Try multiple initialization approaches
+    function initializeWithRetries() {
+        // First attempt - try immediate initialization
+        initialize();
+        
+        // Second attempt - try after a short delay
+        setTimeout(initialize, 500);
+        
+        // Third attempt - try after DOM content loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialize);
+        }
+        
+        // Fourth attempt - try after window load
+        window.addEventListener('load', initialize);
+        
+        // Fifth attempt - try after componentsLoaded event
+        document.addEventListener('componentsLoaded', function() {
+            setTimeout(initialize, 500);
         });
     }
     
-    // Also initialize when components are loaded
-    document.addEventListener('componentsLoaded', function() {
-        setTimeout(initialize, 500);
-    });
+    // Start initialization process
+    initializeWithRetries();
 })();

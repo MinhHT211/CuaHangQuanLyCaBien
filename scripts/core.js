@@ -10,8 +10,35 @@ $(document).on('componentsLoaded', function() {
     checkWebPSupport();
 });
 
+// Also initialize on document ready to ensure components load even if
+// the componentsLoaded event doesn't fire
+$(document).ready(function() {
+    // Check if componentsLoaded has already been triggered
+    if (!window.componentsLoadedFired) {
+        console.log('Document ready - initializing components with delay');
+        setTimeout(initializeWebsite, 1000);
+    }
+});
+
+// Also initialize on window load to catch any late-loading resources
+$(window).on('load', function() {
+    // If componentsLoaded hasn't fired and website isn't initialized yet
+    if (!window.componentsLoadedFired && !window.websiteInitialized) {
+        console.log('Window load - final initialization attempt');
+        initializeWebsite();
+    }
+});
+
 function initializeWebsite() {
     console.log('Initializing website functionality');
+    
+    // Set a flag to prevent duplicate initialization
+    if (window.websiteInitialized) {
+        console.log('Website already initialized, skipping');
+        return;
+    }
+    window.websiteInitialized = true;
+    window.componentsLoadedFired = true;
 
     // Initialize I18n
     if (typeof I18n !== 'undefined') I18n.init();
@@ -24,7 +51,24 @@ function initializeWebsite() {
     setTimeout(function() {
         if (typeof Couple !== 'undefined') Couple.init();
         if (typeof Events !== 'undefined') Events.init();
-        if (typeof Gallery !== 'undefined') Gallery.init();
+        
+        // Initialize Gallery with multiple attempts
+        if (typeof Gallery !== 'undefined') {
+            console.log('Initializing Gallery');
+            Gallery.init();
+            
+            // Additional safety check - try reinitializing after a delay
+            setTimeout(function() {
+                console.log('Re-checking Gallery initialization');
+                if (typeof Gallery.reinitialize === 'function') {
+                    Gallery.reinitialize();
+                }
+                
+                // Force create thumbnails if they don't exist
+                ensureGalleryThumbnails();
+            }, 1000);
+        }
+        
         if (typeof RSVP !== 'undefined') RSVP.init();
         
         // Initialize Lightbox last
@@ -33,6 +77,39 @@ function initializeWebsite() {
         // Final check - directly attach click handlers to key elements
         attachAdditionalEventHandlers();
     }, 300);
+}
+
+// Function to ensure gallery thumbnails are created
+function ensureGalleryThumbnails() {
+    // Check if thumbnails exist
+    const thumbnailsExist = document.querySelector('.gallery-thumbnails-container');
+    if (!thumbnailsExist) {
+        console.log('Gallery thumbnails not found, attempting to create them');
+        
+        // Find active category
+        const activeTab = document.querySelector('.gallery-tab.active');
+        if (activeTab) {
+            const category = activeTab.getAttribute('data-category');
+            const galleryContainer = document.getElementById(category);
+            
+            if (galleryContainer) {
+                // Create thumbnails container
+                const thumbnailsContainer = document.createElement('div');
+                thumbnailsContainer.className = 'gallery-thumbnails-container';
+                
+                // Insert after gallery tabs
+                const tabsContainer = document.querySelector('.gallery-tabs');
+                if (tabsContainer && tabsContainer.parentNode) {
+                    tabsContainer.parentNode.insertBefore(thumbnailsContainer, tabsContainer.nextSibling);
+                    
+                    // Force Gallery reinitialization if available
+                    if (typeof Gallery !== 'undefined' && typeof Gallery.reinitialize === 'function') {
+                        setTimeout(Gallery.reinitialize, 100);
+                    }
+                }
+            }
+        }
+    }
 }
 
 function checkWebPSupport() {
@@ -95,6 +172,9 @@ function attachAdditionalEventHandlers() {
             const targetCategory = document.getElementById(category);
             if (targetCategory) {
                 targetCategory.classList.add('active');
+                
+                // Force thumbnail recreation after tab switch
+                setTimeout(ensureGalleryThumbnails, 100);
             }
         });
     });
