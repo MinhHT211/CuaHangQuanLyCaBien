@@ -164,3 +164,108 @@
     border: 2px solid white;
     opacity: 1;
 }
+
+
+.lightbox-thumbnails-container {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 900px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2001;
+}
+
+/* Thumbnail strip */
+.lightbox-thumbnails {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+    gap: 4px;
+    padding: 5px 0;
+}
+
+/* Hide scrollbar in most browsers */
+.lightbox-thumbnails::-webkit-scrollbar {
+    height: 4px;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.lightbox-thumbnails::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+/* Individual thumbnail */
+.lightbox-thumbnail {
+    flex: 0 0 auto;
+    width: 60px;
+    height: 45px;
+    margin: 0 2px;
+    border: 2px solid transparent;
+    opacity: 0.7;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    overflow: hidden;
+    border-radius: 3px;
+}
+
+.lightbox-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.lightbox-thumbnail:hover {
+    opacity: 0.9;
+}
+
+.lightbox-thumbnail.active {
+    border-color: #fff;
+    opacity: 1;
+}
+
+/* Ensure navigation buttons are hidden in lightbox */
+.lightbox.active .lightbox-prev,
+.lightbox.active .lightbox-next,
+.lightbox.active .lightbox-nav,
+.lightbox-thumbnails-container .thumb-nav-btn {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .lightbox-thumbnails-container {
+        padding: 8px;
+        bottom: 15px;
+    }
+    
+    .lightbox-thumbnail {
+        width: 50px;
+        height: 38px;
+    }
+}
+
+@media (max-width: 480px) {
+    .lightbox-thumbnails-container {
+        padding: 5px;
+        bottom: 10px;
+    }
+    
+    .lightbox-thumbnail {
+        width: 40px;
+        height: 30px;
+    }
+}

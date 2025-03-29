@@ -10,6 +10,8 @@ const Lightbox = (function() {
 	let currentIndex = 0;
 	let isLoading = false;
 	let isInitialized = false;
+	let thumbnailCreateAttempts = 0;
+	const MAX_THUMBNAIL_ATTEMPTS = 5;
 	
 	function init() {
 		console.log('Lightbox.init() called');
@@ -85,7 +87,7 @@ const Lightbox = (function() {
 		// Setup triggers for static elements
 		setupLightboxTriggers();
 		
-		// Add CSS to hide navigation buttons in lightbox
+		// Add CSS to hide navigation buttons in lightbox when it's open
 		addHideNavigationStyle();
 		
 		// Mark as initialized
@@ -174,6 +176,39 @@ const Lightbox = (function() {
 			button.style.opacity = '0';
 			button.style.pointerEvents = 'none';
 		});
+	}
+	
+	function ensureLightboxThumbnails(items, index, attempt = 0) {
+		// Check if there are already thumbnails
+		const lightboxThumbnailsContainer = lightbox.querySelector('.lightbox-thumbnails-container');
+		
+		// If no thumbnails and we have the createLightboxThumbnails function available
+		if (!lightboxThumbnailsContainer) {
+			console.log(`Creating lightbox thumbnails (attempt ${attempt + 1}/${MAX_THUMBNAIL_ATTEMPTS})`);
+			
+			// Try to create thumbnails through the gallery-thumbnail.js if it's available
+			if (typeof window.createLightboxThumbnails === 'function') {
+				window.createLightboxThumbnails(items, index);
+			} else if (typeof createLightboxThumbnails === 'function') {
+				createLightboxThumbnails(items, index);
+			} else {
+				console.warn('createLightboxThumbnails function not found');
+			}
+			
+			// Check if thumbnails were created
+			const thumbnailsContainer = lightbox.querySelector('.lightbox-thumbnails-container');
+			if (!thumbnailsContainer && attempt < MAX_THUMBNAIL_ATTEMPTS) {
+				// If not, try again with exponential backoff
+				const delay = Math.pow(2, attempt) * 100; // 100, 200, 400, 800, 1600ms
+				console.log(`Lightbox thumbnails not created, retrying in ${delay}ms`);
+				
+				setTimeout(() => {
+					ensureLightboxThumbnails(items, index, attempt + 1);
+				}, delay);
+			}
+		} else {
+			console.log('Lightbox thumbnails already exist');
+		}
 	}
 	
 	function open(src, alt = 'Gallery Image', galleryItems = [], index = 0) {
@@ -276,6 +311,24 @@ const Lightbox = (function() {
 			
 			// Hide navigation buttons
 			hideNavigationButtons();
+			
+			// Ensure lightbox thumbnails are created
+			if (galleryItems.length > 0) {
+				// Reset attempt counter
+				thumbnailCreateAttempts = 0;
+				
+				// Try creating thumbnails with multiple attempts
+				ensureLightboxThumbnails(galleryItems, index);
+				
+				// Also try again after a longer delay as a backup
+				setTimeout(() => {
+					const thumbnailsContainer = lightbox.querySelector('.lightbox-thumbnails-container');
+					if (!thumbnailsContainer) {
+						console.log('Second attempt to create lightbox thumbnails');
+						ensureLightboxThumbnails(galleryItems, index);
+					}
+				}, 500);
+			}
 		};
 		
 		// Show lightbox
@@ -357,6 +410,162 @@ const Lightbox = (function() {
 		}
 	}
 	
+	// Expose createLightboxThumbnails globally if it doesn't exist
+	if (typeof window.createLightboxThumbnails !== 'function') {
+		window.createLightboxThumbnails = function(items, index) {
+			console.log('Creating lightbox thumbnails (from Lightbox module)');
+			
+			// Find the lightbox
+			if (!lightbox) {
+				console.warn('Lightbox not found for thumbnail creation');
+				return;
+			}
+			
+			// Remove existing thumbnails container
+			const existingContainer = lightbox.querySelector('.lightbox-thumbnails-container');
+			if (existingContainer) {
+				existingContainer.remove();
+			}
+			
+			// Create thumbnails container
+			const thumbsContainer = document.createElement('div');
+			thumbsContainer.className = 'lightbox-thumbnails-container';
+			
+			// Create thumbnails strip
+			const thumbsStrip = document.createElement('div');
+			thumbsStrip.className = 'lightbox-thumbnails';
+			
+			// Create navigation buttons
+			const prevButton = document.createElement('button');
+			prevButton.className = 'thumb-nav-btn thumb-prev';
+			prevButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
+			prevButton.style.display = 'none'; // Hide nav buttons
+			
+			const nextButton = document.createElement('button');
+			nextButton.className = 'thumb-nav-btn thumb-next';
+			nextButton.innerHTML = '<i class="fas fa-chevron-right"></i>';
+			nextButton.style.display = 'none'; // Hide nav buttons
+			
+			// Add the strip to container (with or without nav buttons)
+			thumbsContainer.appendChild(prevButton);
+			thumbsContainer.appendChild(thumbsStrip);
+			thumbsContainer.appendChild(nextButton);
+			
+			// Add container to lightbox
+			lightbox.appendChild(thumbsContainer);
+			
+			// Create thumbnails for all gallery items
+			items.forEach((item, i) => {
+				// Create thumbnail
+				const thumb = document.createElement('div');
+				thumb.className = 'lightbox-thumbnail';
+				if (i === index) {
+					thumb.classList.add('active');
+				}
+				
+				// Find image
+				const img = item.querySelector('img');
+				if (!img) return;
+				
+				// Get appropriate source
+				let thumbSrc = '';
+				
+				// First try data-src (for lazy loading)
+				if (img.hasAttribute('data-src')) {
+					thumbSrc = img.getAttribute('data-src');
+				} 
+				// Try WebP source if available (also for lazy loading)
+				else if (item.querySelector('picture source[type="image/webp"]')) {
+					const webpSource = item.querySelector('picture source[type="image/webp"]');
+					if (webpSource.hasAttribute('data-srcset')) {
+						thumbSrc = webpSource.getAttribute('data-srcset');
+					}
+				}
+				// Fallback to current src
+				else {
+					thumbSrc = img.src;
+				}
+				
+				// Create thumbnail image
+				const thumbImg = document.createElement('img');
+				thumbImg.src = thumbSrc;
+				thumbImg.alt = img.alt || `Thumbnail ${i + 1}`;
+				
+				// Add image to thumbnail
+				thumb.appendChild(thumbImg);
+				
+				// Add click handler to switch images
+				thumb.addEventListener('click', function() {
+					// Get appropriate image source
+					let fullSrc = '';
+					if (img.hasAttribute('data-full')) {
+						fullSrc = img.getAttribute('data-full');
+					} else if (item.querySelector('picture source[type="image/webp"]')) {
+						const webpSource = item.querySelector('picture source[type="image/webp"]');
+						if (webpSource.hasAttribute('data-srcset')) {
+							fullSrc = webpSource.getAttribute('data-srcset');
+						} else {
+							fullSrc = img.src;
+						}
+					} else {
+						fullSrc = img.src;
+					}
+					
+					// Update the lightbox image
+					if (lightboxImage) {
+						lightboxImage.src = fullSrc;
+						lightboxImage.alt = img.alt || 'Gallery Image';
+					}
+					
+					// Update current index
+					currentIndex = i;
+					
+					// Update active thumbnails
+					const allThumbs = thumbsStrip.querySelectorAll('.lightbox-thumbnail');
+					allThumbs.forEach((t, idx) => {
+						if (idx === i) {
+							t.classList.add('active');
+						} else {
+							t.classList.remove('active');
+						}
+					});
+					
+					// Ensure the active thumbnail is visible
+					setTimeout(() => {
+						const activeThumb = thumbsStrip.querySelector('.lightbox-thumbnail.active');
+						if (activeThumb) {
+							const stripWidth = thumbsStrip.offsetWidth;
+							const thumbWidth = activeThumb.offsetWidth + 4; // 4px margin
+							
+							const scrollPos = activeThumb.offsetLeft - (stripWidth / 2) + (thumbWidth / 2);
+							thumbsStrip.scrollLeft = Math.max(0, scrollPos);
+						}
+					}, 50);
+				});
+				
+				// Add to strip
+				thumbsStrip.appendChild(thumb);
+			});
+			
+			// Ensure active thumbnail is visible
+			setTimeout(() => {
+				const activeThumb = thumbsStrip.querySelector('.lightbox-thumbnail.active');
+				if (activeThumb) {
+					const stripWidth = thumbsStrip.offsetWidth;
+					const thumbWidth = activeThumb.offsetWidth + 4; // 4px margin
+					
+					const scrollPos = activeThumb.offsetLeft - (stripWidth / 2) + (thumbWidth / 2);
+					thumbsStrip.scrollLeft = Math.max(0, scrollPos);
+				}
+			}, 100);
+			
+			// Hide navigation buttons in lightbox
+			hideNavigationButtons();
+			
+			return thumbsContainer;
+		};
+	}
+	
 	// Initialize on DOM ready
 	document.addEventListener('DOMContentLoaded', function() {
 		setTimeout(init, 100); // Short delay to ensure DOM is ready
@@ -371,6 +580,14 @@ const Lightbox = (function() {
 		}, 500); // Longer delay for component loading
 	});
 	
+	// Make sure lightbox is initialized when the window loads
+	window.addEventListener('load', function() {
+		if (!isInitialized) {
+			console.log('Window load - initializing lightbox');
+			init();
+		}
+	});
+	
 	return {
 		init: init,
 		open: open,
@@ -378,6 +595,7 @@ const Lightbox = (function() {
 		prev: prev,
 		next: next,
 		setupTriggers: setupLightboxTriggers,
-		hideNavigationButtons: hideNavigationButtons
+		hideNavigationButtons: hideNavigationButtons,
+		createLightboxThumbnails: window.createLightboxThumbnails
 	};
 })();
