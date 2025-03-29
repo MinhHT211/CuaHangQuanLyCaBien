@@ -13,6 +13,8 @@
     let currentIndex = 0;
     let allGalleryItems = {};
     let isInitialized = false;
+    let initAttempts = 0;
+    const MAX_INIT_ATTEMPTS = 5;
     
     /**
      * Main initialization function
@@ -20,7 +22,7 @@
     function initialize() {
         if (isInitialized) return;
         
-        console.log('Initializing complete gallery fix');
+        console.log('Initializing gallery thumbnails');
         
         // Set up event listeners for tab switching
         setupTabListeners();
@@ -66,17 +68,51 @@
      * Create thumbnail navigation for active category
      */
     function createThumbnailsForActiveCategory(force = false) {
-        if (!activeGalleryCategory) return;
+        if (!activeGalleryCategory) {
+            // Try to get active category from tab
+            const activeTab = document.querySelector('.gallery-tab.active');
+            if (activeTab) {
+                activeGalleryCategory = activeTab.getAttribute('data-category');
+            } else {
+                // Default to first tab if none is active
+                const firstTab = document.querySelector('.gallery-tab');
+                if (firstTab) {
+                    activeGalleryCategory = firstTab.getAttribute('data-category');
+                    // Make it active
+                    firstTab.classList.add('active');
+                } else {
+                    console.warn('No gallery tabs found');
+                    return;
+                }
+            }
+        }
         
         // Find active gallery container
         const galleryContainer = document.getElementById(activeGalleryCategory);
-        if (!galleryContainer) return;
+        if (!galleryContainer) {
+            console.warn('Gallery container not found for category:', activeGalleryCategory);
+            
+            // If we've tried a few times and still can't find it, give up
+            if (++initAttempts > MAX_INIT_ATTEMPTS) {
+                console.error('Max initialization attempts reached, giving up');
+                return;
+            }
+            
+            // Try again after a delay
+            setTimeout(() => {
+                createThumbnailsForActiveCategory(force);
+            }, 500);
+            
+            return;
+        }
         
         // Check if thumbnails already exist
         let thumbnailsContainer = document.querySelector('.gallery-thumbnails-container');
         
         // If we need to force recreation or container doesn't exist
         if (force || !thumbnailsContainer) {
+            console.log('Creating thumbnails container for category:', activeGalleryCategory);
+            
             // Remove existing container if any
             if (thumbnailsContainer) {
                 thumbnailsContainer.remove();
@@ -93,10 +129,32 @@
             const tabsContainer = document.querySelector('.gallery-tabs');
             if (tabsContainer && tabsContainer.parentNode) {
                 tabsContainer.parentNode.insertBefore(thumbnailsContainer, tabsContainer.nextSibling);
+            } else {
+                console.warn('Gallery tabs container not found, cannot insert thumbnails');
+                
+                // Try to find another insertion point - the gallery section
+                const gallerySection = document.querySelector('.gallery');
+                if (gallerySection) {
+                    // Insert at the beginning of the gallery section
+                    const firstChild = gallerySection.firstChild;
+                    if (firstChild) {
+                        gallerySection.insertBefore(thumbnailsContainer, firstChild);
+                    } else {
+                        gallerySection.appendChild(thumbnailsContainer);
+                    }
+                } else {
+                    console.error('Cannot find an element to insert thumbnails container into');
+                    return;
+                }
             }
             
             // Collect all gallery items for the category
             const galleryItems = galleryContainer.querySelectorAll('.gallery-item');
+            if (galleryItems.length === 0) {
+                console.warn('No gallery items found for category:', activeGalleryCategory);
+                return;
+            }
+            
             allGalleryItems[activeGalleryCategory] = Array.from(galleryItems);
             
             // Create thumbnails after a short delay (allows DOM to update)
@@ -470,7 +528,7 @@
         });
         
         // Scroll to active thumbnail
-        setTimeout(() => {
+        setTimeout(function() {
             const activeThumb = thumbsStrip.querySelector('.lightbox-thumbnail.active');
             if (activeThumb) {
                 const stripWidth = thumbsStrip.offsetWidth;
@@ -541,18 +599,49 @@
         }
     }
     
+    // Expose the createThumbnailsForActiveCategory function globally so it can be called from other scripts
+    window.createThumbnailsForActiveCategory = createThumbnailsForActiveCategory;
+    
+    // Multiple initialization attempts with increasing delays
+    function initWithRetry(attempt = 0) {
+        // Try to initialize
+        initialize();
+        
+        // If thumbnails still don't exist, try again with increasing delays
+        const thumbnailsContainer = document.querySelector('.gallery-thumbnails-container');
+        if (!thumbnailsContainer && attempt < MAX_INIT_ATTEMPTS) {
+            const delay = Math.pow(2, attempt) * 300; // Exponential backoff: 300, 600, 1200, 2400, 4800ms
+            console.log(`Thumbnails not created, retrying in ${delay}ms (attempt ${attempt + 1}/${MAX_INIT_ATTEMPTS})`);
+            
+            setTimeout(() => {
+                initWithRetry(attempt + 1);
+            }, delay);
+        }
+    }
+    
     // Initialize immediately if document is already loaded
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
-        setTimeout(initialize, 100);
+        initWithRetry();
     } else {
         // Otherwise wait for document to load
         document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(initialize, 100);
+            initWithRetry();
         });
     }
     
     // Also initialize when components are loaded
     document.addEventListener('componentsLoaded', function() {
-        setTimeout(initialize, 500);
+        setTimeout(initWithRetry, 300);
+    });
+    
+    // Final attempt on window load (which happens after all resources are loaded)
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            const thumbnailsContainer = document.querySelector('.gallery-thumbnails-container');
+            if (!thumbnailsContainer) {
+                console.log('Window load - final thumbnail creation attempt');
+                createThumbnailsForActiveCategory(true);
+            }
+        }, 1000);
     });
 })();
