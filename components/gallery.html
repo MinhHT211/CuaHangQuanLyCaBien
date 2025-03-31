@@ -10,7 +10,7 @@
 			  <button class="gallery-tab" data-category="engagement">Lễ ăn hỏi</button>
 			  <button class="gallery-tab" data-category="wedding">Lễ thành hôn</button>
 		</div>
-		<div class="gallery-browser-container"></div>
+		
 		<div class="gallery-container gallery-category active" id="journey">
 			<div class="gallery-item">
 				<picture>
@@ -160,7 +160,7 @@
 
 
 
-		<div class="gallery-browser-container"></div>
+		
 		<div class="gallery-container gallery-category" id="engagement">
 			<div class="gallery-item">
 				<picture>
@@ -310,7 +310,7 @@
 
 
 
-		<div class="gallery-browser-container"></div>
+		
 		<div class="gallery-container gallery-category" id="wedding">
 			<div class="gallery-item">
 				<picture>
@@ -463,7 +463,17 @@
 <!-- Lightbox -->
 <div class="lightbox" id="gallery-lightbox">
 	<span class="lightbox-close">&times;</span>
+	<div class="lightbox-nav lightbox-prev">
+		<i class="fas fa-chevron-left"></i>
+	</div>
 	<div class="lightbox-content">
+		<div class="lightbox-loading">
+			<div class="spinner"></div>
+			<div>Loading...</div>
+		</div>
 		<img src="" alt="Gallery Image" class="lightbox-img" id="lightbox-image">
+	</div>
+	<div class="lightbox-nav lightbox-next">
+		<i class="fas fa-chevron-right"></i>
 	</div>
 </div>

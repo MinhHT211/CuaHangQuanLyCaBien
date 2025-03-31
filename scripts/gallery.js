@@ -31,13 +31,6 @@ const Gallery = (function() {
 			initLazyLoading();
 			initGalleryItemEvents();
 			isInitialized = true;
-            
-            // Ensure thumbnails are created
-            setTimeout(() => {
-                if (typeof window.createThumbnailsForActiveCategory === 'function') {
-                    window.createThumbnailsForActiveCategory(true);
-                }
-            }, 500);
 		} else {
 			console.log('Gallery already initialized, reinitializing');
 			reinitialize();
@@ -351,13 +344,6 @@ const Gallery = (function() {
 			} else {
 				initLazyLoading();
 			}
-            
-            // Make sure thumbnails are created
-            setTimeout(() => {
-                if (typeof window.createThumbnailsForActiveCategory === 'function') {
-                    window.createThumbnailsForActiveCategory(true);
-                }
-            }, 500);
 		},
 		// Expose for manual trigger if needed
 		loadImagesForContainer: loadImagesForContainer
@@ -378,17 +364,4 @@ document.addEventListener('componentsLoaded', function() {
 	setTimeout(() => {
 		Gallery.reinitialize();
 	}, 300); // Longer delay to ensure components are fully loaded
-});
-
-// Additional check: Make sure thumbnails are created after a delay
-window.addEventListener('load', function() {
-    console.log('Window loaded - checking for thumbnails');
-    setTimeout(() => {
-        // Check if thumbnails exist, if not and the thumbnails function exists, create them
-        const thumbnailsStrip = document.querySelector('.gallery-thumbnails-container');
-        if (!thumbnailsStrip && typeof window.createThumbnailsForActiveCategory === 'function') {
-            console.log('No thumbnails found, creating them');
-            window.createThumbnailsForActiveCategory(true);
-        }
-    }, 1000);
 });

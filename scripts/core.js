@@ -10,26 +10,6 @@ $(document).on('componentsLoaded', function() {
     checkWebPSupport();
 });
 
-// Also initialize thumbnails on DOMContentLoaded
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize thumbnails after a delay
-    setTimeout(initializeThumbnails, 800);
-});
-
-// Make sure thumbnails are initialized when window is fully loaded
-window.addEventListener('load', function() {
-    setTimeout(initializeThumbnails, 300);
-    
-    // Final fallback check for thumbnails
-    setTimeout(function() {
-        const galleryThumbnails = document.querySelector('.gallery-thumbnails-container');
-        if (!galleryThumbnails && typeof window.createThumbnailsForActiveCategory === 'function') {
-            console.log('Window load - final thumbnail creation attempt');
-            window.createThumbnailsForActiveCategory(true);
-        }
-    }, 1500);
-});
-
 function initializeWebsite() {
     console.log('Initializing website functionality');
 
@@ -52,9 +32,6 @@ function initializeWebsite() {
         
         // Final check - directly attach click handlers to key elements
         attachAdditionalEventHandlers();
-        
-        // Initialize thumbnails after components are loaded
-        setTimeout(initializeThumbnails, 500);
     }, 300);
 }
 
@@ -118,80 +95,7 @@ function attachAdditionalEventHandlers() {
             const targetCategory = document.getElementById(category);
             if (targetCategory) {
                 targetCategory.classList.add('active');
-                
-                // Create thumbnails for the selected category after tab change
-                setTimeout(function() {
-                    if (typeof window.createThumbnailsForActiveCategory === 'function') {
-                        window.createThumbnailsForActiveCategory(true);
-                    }
-                }, 100);
             }
         });
     });
-    
-    // Add event listener for gallery items to ensure lightbox thumbnails are created
-    document.addEventListener('click', function(e) {
-        // When clicking a gallery item
-        if (e.target.closest('.gallery-item') || e.target.closest('.gallery-overlay')) {
-            // Wait for lightbox to open
-            setTimeout(function() {
-                // If lightbox is open but no thumbnails
-                const lightbox = document.querySelector('.lightbox.active');
-                if (lightbox && !lightbox.querySelector('.lightbox-thumbnails-container')) {
-                    console.log('Core: Lightbox opened, ensuring thumbnails are created');
-                    
-                    // Get gallery items from active category
-                    const activeCategory = document.querySelector('.gallery-category.active');
-                    if (activeCategory) {
-                        const galleryItems = activeCategory.querySelectorAll('.gallery-item');
-                        
-                        // Find the clicked item
-                        const clickedItem = e.target.closest('.gallery-item');
-                        let currentIndex = 0;
-                        
-                        if (clickedItem) {
-                            currentIndex = Array.from(galleryItems).indexOf(clickedItem);
-                        }
-                        
-                        // Create thumbnails
-                        if (typeof window.createLightboxThumbnails === 'function') {
-                            window.createLightboxThumbnails(Array.from(galleryItems), currentIndex);
-                        }
-                    }
-                }
-            }, 300);
-        }
-    });
 }
-
-/**
- * Initialize thumbnails for both gallery and lightbox
- */
-function initializeThumbnails() {
-    console.log('Core: Initializing thumbnails');
-    
-    // For gallery thumbnails
-    if (typeof window.createThumbnailsForActiveCategory === 'function') {
-        console.log('Core: Creating gallery thumbnails');
-        window.createThumbnailsForActiveCategory(true);
-    } else {
-        console.log('Core: Gallery thumbnail function not available yet');
-        
-        // Try again in a moment if Gallery module isn't initialized yet
-        setTimeout(function() {
-            if (typeof window.createThumbnailsForActiveCategory === 'function') {
-                console.log('Core: Retry creating gallery thumbnails');
-                window.createThumbnailsForActiveCategory(true);
-            }
-        }, 500);
-    }
-    
-    // Hide navigation buttons in the lightbox if it's open
-    const lightbox = document.querySelector('.lightbox.active');
-    if (lightbox && typeof Lightbox !== 'undefined' && Lightbox.hideNavigationButtons) {
-        Lightbox.hideNavigationButtons();
-    }
-}
-
-// Expose the initialization function globally so it can be called from other scripts
-window.initializeThumbnails = initializeThumbnails;

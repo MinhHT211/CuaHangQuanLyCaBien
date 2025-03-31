@@ -1,271 +1,165 @@
 .lightbox {
-	display: none;
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background-color: rgba(0, 0, 0, 0.9);
-	z-index: 2000;
-	justify-content: center;
-	align-items: center;
-	padding: 40px 40px 120px; /* Increased bottom padding to accommodate thumbnails */
-	box-sizing: border-box;
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    box-sizing: border-box;
 }
 
 .lightbox.active {
-	display: flex;
+    display: flex;
 }
 
 .lightbox-content {
-	position: relative;
-	max-width: 90%;
-	max-height: 80%; /* Reduced from 90% to make room for thumbnails */
-	margin-bottom: 60px; /* Add space for the thumbnails below */
+    position: relative;
+    max-width: 90%;
+    max-height: 90%; /* Restored from 80% since we don't have thumbnails anymore */
+    margin-bottom: 0; /* Removed the space for thumbnails */
 }
 
 .lightbox-img {
-	display: block;
-	max-width: 100%;
-	max-height: 80vh; /* Reduced to ensure it doesn't overlap with thumbnails */
-	margin: 0 auto;
-	box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    display: block;
+    max-width: 100%;
+    max-height: 90vh; /* Increased from 80vh since we don't have thumbnails anymore */
+    margin: 0 auto;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
 .lightbox-close {
-	position: absolute;
-	top: 20px;
-	right: 20px;
-	color: #fff;
-	font-size: 30px;
-	cursor: pointer;
-	z-index: 2001;
-	background-color: rgba(0, 0, 0, 0.5);
-	width: 40px;
-	height: 40px;
-	border-radius: 50%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: #fff;
+    font-size: 30px;
+    cursor: pointer;
+    z-index: 2001;
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .lightbox-close:hover {
-	background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .lightbox-image {
-	cursor: pointer;
+    cursor: pointer;
 }
 
-/* Added styles for thumbnails container */
-.lightbox-thumbnails-container {
-	position: absolute;
-	bottom: 20px; /* Position from bottom of lightbox */
-	left: 50%;
-	transform: translateX(-50%);
-	width: 90%;
-	max-width: 900px;
-	background-color: rgba(0, 0, 0, 0.5);
-	border-radius: 8px;
-	padding: 10px 40px;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	z-index: 2001;
+/* Navigation Controls for Lightbox */
+.lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+    z-index: 2001;
+}
+
+.lightbox-nav:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.lightbox-prev {
+    left: 20px;
+}
+
+.lightbox-next {
+    right: 20px;
+}
+
+/* Loading Indicator */
+.lightbox-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 18px;
+    text-align: center;
+}
+
+.spinner {
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top: 5px solid white;
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 10px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 /* Image hover effect for all gallery items */
 .gallery-item, .couple-image {
-	position: relative;
-	overflow: hidden;
-	cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
 }
 
 .gallery-item:hover .gallery-image,
 .couple-image:hover img {
-	transform: scale(1.05);
-}
-
-/* Added responsive adjustments */
-@media (max-width: 768px) {
-	.lightbox {
-		padding: 40px 40px 100px;
-	}
-	
-	.lightbox-content {
-		margin-bottom: 50px;
-	}
-	
-	.lightbox-thumbnails-container {
-		padding: 8px 35px;
-	}
-}
-
-@media (max-width: 480px) {
-	.lightbox {
-		padding: 40px 40px 90px;
-	}
-	
-	.lightbox-content {
-		margin-bottom: 40px;
-	}
-	
-	.lightbox-thumbnails-container {
-		padding: 6px 30px;
-		bottom: 15px;
-	}
-}
-
-/* CSS to hide navigation buttons when lightbox is active */
-.lightbox.active .lightbox-prev,
-.lightbox.active .lightbox-next,
-.lightbox.active .lightbox-nav {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-}
-
-/* Make scrollable thumbnails work well without navigation buttons */
-.lightbox-thumbnails {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    padding: 5px 0;
-    gap: 4px;
-    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-}
-
-.lightbox-thumbnails::-webkit-scrollbar {
-    height: 4px;
-    background: rgba(0, 0, 0, 0.1);
-}
-
-.lightbox-thumbnails::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
-}
-
-/* Ensure thumbnails are visible */
-.lightbox-thumbnail {
-    flex: 0 0 auto;
-    margin: 0 3px;
-    cursor: pointer;
-    opacity: 0.7;
-    transition: opacity 0.3s;
-}
-
-.lightbox-thumbnail:hover {
-    opacity: 1;
-}
-
-.lightbox-thumbnail.active {
-    border: 2px solid white;
-    opacity: 1;
-}
-
-
-.lightbox-thumbnails-container {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%;
-    max-width: 900px;
-    background-color: rgba(0, 0, 0, 0.5);
-    border-radius: 8px;
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2001;
-}
-
-/* Thumbnail strip */
-.lightbox-thumbnails {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    max-width: 100%;
-    gap: 4px;
-    padding: 5px 0;
-}
-
-/* Hide scrollbar in most browsers */
-.lightbox-thumbnails::-webkit-scrollbar {
-    height: 4px;
-    background: rgba(0, 0, 0, 0.1);
-}
-
-.lightbox-thumbnails::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
-}
-
-/* Individual thumbnail */
-.lightbox-thumbnail {
-    flex: 0 0 auto;
-    width: 60px;
-    height: 45px;
-    margin: 0 2px;
-    border: 2px solid transparent;
-    opacity: 0.7;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    overflow: hidden;
-    border-radius: 3px;
-}
-
-.lightbox-thumbnail img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.lightbox-thumbnail:hover {
-    opacity: 0.9;
-}
-
-.lightbox-thumbnail.active {
-    border-color: #fff;
-    opacity: 1;
-}
-
-/* Ensure navigation buttons are hidden in lightbox */
-.lightbox.active .lightbox-prev,
-.lightbox.active .lightbox-next,
-.lightbox.active .lightbox-nav,
-.lightbox-thumbnails-container .thumb-nav-btn {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
+    transform: scale(1.05);
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .lightbox-thumbnails-container {
-        padding: 8px;
-        bottom: 15px;
+    .lightbox-close {
+        top: 10px;
+        right: 10px;
+        width: 35px;
+        height: 35px;
     }
     
-    .lightbox-thumbnail {
-        width: 50px;
-        height: 38px;
+    .lightbox-nav {
+        width: 40px;
+        height: 40px;
+        font-size: 24px;
     }
 }
 
 @media (max-width: 480px) {
-    .lightbox-thumbnails-container {
-        padding: 5px;
-        bottom: 10px;
+    .lightbox-close {
+        top: 10px;
+        right: 10px;
+        width: 35px;
+        height: 35px;
     }
     
-    .lightbox-thumbnail {
-        width: 40px;
-        height: 30px;
+    .lightbox-nav {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .lightbox-prev {
+        left: 10px;
+    }
+    
+    .lightbox-next {
+        right: 10px;
     }
 }
