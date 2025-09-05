@@ -4,11 +4,19 @@
   "description": "Wedding website for Quốc Việt & Thanh Thủy",
   "main": "index.html",
   "scripts": {
-    "start": "http-server -p 8080"
+    "start": "node server.js"
   },
+  "keywords": [
+    "html",
+    "css",
+    "javascript"
+  ],
   "author": "Quốc Việt & Thanh Thủy",
   "license": "MIT",
   "devDependencies": {
     "http-server": "^14.1.1"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
   }
 }
